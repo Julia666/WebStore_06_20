@@ -10,7 +10,8 @@ namespace WebStore.Controllers
     {
         public IActionResult Index()
         {
-            return Content("First controller - Home!");
+            return View(); // если в () ничего не указано, то ищется представление с именем действия, 
+                            // иначе в () указываем какое конкретно представление хотим отобразить View("Index")
         }
     }
 }
