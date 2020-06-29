@@ -5,13 +5,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace WebStore
 {
     public class Startup
-    {
+
+    {   // теперь имея этот объект в приватном поле, мы сможем использовать конфигурацию из файла appsettings.json в двух основных методах ConfigureServices() и Configure()
+        private readonly IConfiguration _Configuration; 
+
+
+        // Извлекаем систему конфигурации через конструктор
+        public Startup(IConfiguration Configuration) 
+        {
+            _Configuration = Configuration; // сохраняем в приватное поле
+        }
+
         // Назначение: взять коллекцию сервисов. Необходимо добавить в эту коллекцию все структурные блоки моего приложения, 
         // которые впоследствии объединятся между собой и будут выполнять задачи бизнес-логики и основного веб-приложения
         // (например, взаимодействие с базой данных, отслеживание куда какой пользователь заходит, система логирования -
@@ -20,6 +31,7 @@ namespace WebStore
         // После того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
         }
 
         // Конфигурирует конкретные сервисы. Формирует конвеер, который будет обрабатывать входящие подключения.
@@ -31,19 +43,52 @@ namespace WebStore
         // Таким образом, вызывая методы, обращенные к переменной app  - мы наращиваем структуру этого конвеера.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment()) // подключаем это промежуточное ПО только на стадии разработки
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage(); // система обработки исключений (если в процессе обработки входящего запроса происходит ошибка,
+                                                 // то эта ошибка распространяется вверх по стеку вызова и перехватывается данной системой,
+                                                 // в результате мы увидим специальную html страницу с информацией что пошло не так)
             }
 
-            app.UseRouting();
+            // добавляем специальные механизмы, которые способны возвращать статическое содержимое 
+            // (файлы css, javascript, html которые могут находиться в специальной папке wwwroot)
+            // подключаем промежуточное ПО
+            app.UseStaticFiles();
+            app.UseDefaultFiles();
 
-            app.UseEndpoints(endpoints =>
+            app.UseRouting(); // подключени системы маршрутизации
+
+            // Добавление специальных обработчиков конечных точек приложения. 
+            // Конечная точка - адрес, который мы можем вводить после имени хоста (localhost:5000/HelloWorld/123/asd/zxc - всё что идет после 5000)
+            // и которая должна будет выполнить обработку запроса к ней (действия). В этом месте мы как раз и можем определить,
+            // что конкретно по каким адресам должно быть выполнено
+            app.UseEndpoints(endpoints =>  
             {
-                endpoints.MapGet("/", async context =>
+                endpoints.MapGet("/greetings", async context =>
+                {
+                    await context.Response.WriteAsync(_Configuration["CustomGreetings"]); // берем объект _Configuration и извлекаем из него
+                                                                                          // значение с названием CustomGreetings
+                });
+
+                /*
+                endpoints.MapGet("/", async context =>  // для корневого адреса (т.е. если ничего не вводить) будет выполнено действие,
+                                                        //  которое возвращает Hello World (берет контекст входящего запроса, берет ответ который формируется и в него пишет асинхронно)
                 {
                     await context.Response.WriteAsync("Hello World!");
                 });
+                */
+
+                // подключаем систему MVC, которая будет сопоставлять входящие запросы с именами контроллеров
+                // (формируем шаблон сопоставления адреса входящего запроса с теми параметрами 
+                // контроллера, действия и параметра этого действия, что у нас будут реализованы
+                endpoints.MapControllerRoute( // добавляем путь контроллерам
+                    name:"default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}"); // шаблон строки запроса из которой будет извлекаться информация
+                              // имя контроллера / имя действия этого контроллера/ параметр этого дейтсвия
+                              // если не указан контроллер, то по умолчанию брать Home
+                              // если не указано действие, то по умолчанию считать его именем Index
+                              //если не указан идентификатор (параметр действия), то его можно опустить
+
             });
         }
     }
