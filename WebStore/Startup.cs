@@ -31,7 +31,7 @@ namespace WebStore
         // После того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
+            services.AddControllersWithViews().AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
         }
 
         // Конфигурирует конкретные сервисы. Формирует конвеер, который будет обрабатывать входящие подключения.
