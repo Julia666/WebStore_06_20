@@ -1,0 +1,31 @@
+﻿@model WebStore.Models.Employee
+
+    <div class="container">
+        <h3>Сотрудник</h3>
+        <table>
+            <tr class="">
+                <th>Id</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>Фамилия</th>
+                <td>@Model.SurName</td>
+            </tr>
+            <tr>
+                <th>Имя</th>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <th>Отчество</th>
+                <td>@Model.Patronymic</td>
+            </tr>
+            <tr>
+                <th>Возраст</th>
+                <td>@Model.Age</td>
+            </tr>
+        </table>
+
+        <hr />
+        <a asp-controller="Employees" asp-action="Index">К списку</a>
+    </div>
+
