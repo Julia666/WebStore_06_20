@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.MiddleWare;
+using WebStore.Infrastructure.Services;
 
 namespace WebStore
 {
@@ -37,6 +39,7 @@ namespace WebStore
                 //opt.Filters.Add<Filter>();
                 //opt.Conventions.Add(); // добавление/изменение соглашений MVC-приложения
             }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
+            services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
         }
 
         // Конфигурирует конкретные сервисы. Формирует конвеер, который будет обрабатывать входящие подключения.
@@ -63,8 +66,9 @@ namespace WebStore
 
             app.UseRouting(); // подключени системы маршрутизации
 
-            /*
-            app.UseWelcomePage("/welcome");
+            #region
+            
+            /*app.UseWelcomePage("/welcome");
 
             app.Use(async (context, next) => // Принцип работы промежуточного ПО: 
             // для каждого входящего запроса получаем объект context (с информацией о входящем соединении и
@@ -75,9 +79,9 @@ namespace WebStore
                 // .... действия над context после следующего элемента в конвеере
             });
 
-            app.UseMiddleware<TestMiddleWare>();
-            */
-
+            app.UseMiddleware<TestMiddleWare>(); */
+            
+            #endregion
 
             // Добавление специальных обработчиков конечных точек приложения. 
             // Конечная точка - адрес, который мы можем вводить после имени хоста (localhost:5000/HelloWorld/123/asd/zxc - всё что идет после 5000)
