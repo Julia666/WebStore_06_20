@@ -13,6 +13,9 @@ namespace WebStore
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(host =>host
                     .UseStartup<Startup>()
+                    //.UseUrls("http://localhost:5000") // можно так, через метод расширени
+                                                        // открывает наше приложение миру, какие именно адреса система будет прослушивать
+                                                        // если не подключить - не будет доступа извне к приложению, например, с телефона
                 );
     }
 }
