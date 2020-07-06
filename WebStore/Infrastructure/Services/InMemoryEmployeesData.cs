@@ -26,7 +26,7 @@ namespace WebStore.Infrastructure.Services
         public bool Delete(int id) => _Employees.RemoveAll(e => e.Id == id) > 0;
        
 
-        public void Employee(Employee employee) 
+        public void Edit(Employee employee) 
         {
             if (employee is null)
                 throw new ArgumentNullException(nameof(employee));
