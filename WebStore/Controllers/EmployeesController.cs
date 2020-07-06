@@ -82,8 +82,9 @@ namespace WebStore.Controllers
 
             return RedirectToAction(nameof(Index)); // перенаправляет на метод Index, чтобы отобразить всех сотрудников
         }
-        #endregion 
+        #endregion
 
+        #region Delete
         public IActionResult Delete(int id)
         {
             if (id <= 0)
@@ -102,9 +103,16 @@ namespace WebStore.Controllers
                     LastName = employee.SurName,
                     Patronymic = employee.Patronymic,
                     Age = employee.Age
-
                 });
         }
-    }
 
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id) // подтверждение удаления
+        {
+            _EmployeesData.Delete(id);
+            _EmployeesData.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+    }
 }

@@ -1,11 +1,11 @@
 ﻿@model EmployeesViewModel
-@{ 
+@{
     ViewData["Title"] = $"Редактирование сотрудника id:" + Model.Id;
 }
 
 <div class="container">
     <h3>@ViewData["Title"]</h3>
-    <hr/>
+    <hr />
 
     <form asp-action="Edit">
         <div class="row">
@@ -43,7 +43,7 @@
                     <a asp-action="Index" class="btn btn-info">К списку</a>
                 </div>
 
-            </div>    
+            </div>
         </div>
     </form>
 </div>
