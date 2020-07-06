@@ -33,6 +33,7 @@ namespace WebStore.Controllers
             return View(employee);
         }
 
+        #region Edit
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -54,13 +55,55 @@ namespace WebStore.Controllers
                 Patronymic = employee.Patronymic,
                 Age = employee.Age
 
-            }); ; ; 
+            }); 
         }
 
         [HttpPost] // обрабатывает ответ формы
         public IActionResult Edit(EmployeesViewModel Model)
         {
+            if (Model is null)
+                throw new ArgumentNullException(nameof(Model));
+
+            var employee = new Employee //формируем нового сотрудника
+            {
+                Id = Model.Id,
+                SurName = Model.LastName,
+                Name = Model.FirstName,
+                Patronymic = Model.Patronymic,
+                Age = Model.Age
+            };
+
+            if (Model.Id == 0)
+                _EmployeesData.Add(employee);
+            else
+                _EmployeesData.Edit(employee);
+
+            _EmployeesData.SaveChanges();
+
             return RedirectToAction(nameof(Index)); // перенаправляет на метод Index, чтобы отобразить всех сотрудников
+        }
+        #endregion 
+
+        public IActionResult Delete(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var employee = _EmployeesData.GetById(id);// извлекаем сотрудника, которого будем удалять
+
+            if (employee is null)
+                return NotFound();
+
+            return View(   // представление удаления, на которое передадим вьюмодель
+                new EmployeesViewModel // передача вьюмодели на представление
+                {
+                    Id = employee.Id, 
+                    FirstName = employee.Name,
+                    LastName = employee.SurName,
+                    Patronymic = employee.Patronymic,
+                    Age = employee.Age
+
+                });
         }
     }
 
