@@ -14,7 +14,7 @@ namespace WebStore.Controllers
        
 
         // [Route("All")]
-        public IActionResult Ind
+        public IActionResult Index()
         {
             return View(TestData.Employees);
         }
