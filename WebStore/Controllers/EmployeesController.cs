@@ -7,6 +7,7 @@ using WebStore.Models;
 
 namespace WebStore.Controllers
 {
+    // [Route("Users")]
     public class EmployeesController : Controller
     {
         private static readonly List<Employee> _Employees = new List<Employee>
@@ -39,11 +40,13 @@ namespace WebStore.Controllers
             },
         };
 
+        // [Route("All")]
         public IActionResult Index()
         {
             return View(_Employees);
         }
 
+        // [Route("User-{id}")]
         public IActionResult Details(int id)
         {
             var employee = _Employees.FirstOrDefault(e => e.Id == id); // извлекает 1й элемент с каким-то совпадением по какому-то критерию
