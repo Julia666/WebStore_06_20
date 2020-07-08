@@ -3,55 +3,116 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using WebStore.Data;
+using WebStore.Infrastructure.Interfaces;
 using WebStore.Models;
+using WebStore.ViewModels;
 
 namespace WebStore.Controllers
 {
+    // [Route("Users")]
     public class EmployeesController : Controller
     {
-        private static readonly List<Employee> _Employees = new List<Employee>
-        {
-            new Employee
-            {
-                Id = 1,
-                SurName = "Иванов",
-                Name = "Иван",
-                Patronymic = "Иванович",
-                Age = 39
-            },
+        private readonly IEmployeesData _EmployeesData;
+        public EmployeesController(IEmployeesData EmployeesData) => _EmployeesData = EmployeesData;
+        
 
-            new Employee
-            {
-                Id = 2,
-                SurName = "Петров",
-                Name = "Пётр",
-                Patronymic = "Петрович",
-                Age = 27
-            },
-
-            new Employee
-            {
-                Id = 3,
-                SurName = "Сидоров",
-                Name = "Сидор",
-                Patronymic = "Сидорович",
-                Age = 18
-            },
-        };
-
+        // [Route("All")]
         public IActionResult Index()
         {
-            return View(_Employees);
+            return View(_EmployeesData.Get()); // получение всех сотрудников
         }
 
-        public IActionResult Details(int id)
+        // [Route("User-{id}")]
+        public IActionResult Details(int id) // посмотреть конкретного сотрудника по его id
         {
-            var employee = _Employees.FirstOrDefault(e => e.Id == id); // извлекает 1й элемент с каким-то совпадением по какому-то критерию
+            var employee = _EmployeesData.GetById(id); // извлекает 1й элемент с каким-то совпадением по какому-то критерию
             if (employee == null)
                 return NotFound(); // код ошибки 404
 
             return View(employee);
         }
-    }
 
+        #region Edit
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if(id is null) // если идентификатор не передан
+              return View(new EmployeesViewModel()); // то создаем нового сотрудника и передаем пустую модель на представление
+
+            if (id < 0)
+                return BadRequest();
+
+            var employee = _EmployeesData.GetById((int)id); // извлекаем из сервиса редактируемого сотрудника
+            if (employee is null) //если сервис не нашел сотрудника
+                return NotFound();
+            // если сотрудник найден, создаем вьюмодель и пердаем на нее информацию
+            return View(new EmployeesViewModel
+            {
+                Id = employee.Id, // передача вьюмодели на представление
+                FirstName = employee.Name,
+                LastName = employee.SurName,
+                Patronymic = employee.Patronymic,
+                Age = employee.Age
+
+            }); 
+        }
+
+        [HttpPost] // обрабатывает ответ формы
+        public IActionResult Edit(EmployeesViewModel Model)
+        {
+            if (Model is null)
+                throw new ArgumentNullException(nameof(Model));
+
+            var employee = new Employee //формируем нового сотрудника
+            {
+                Id = Model.Id,
+                SurName = Model.LastName,
+                Name = Model.FirstName,
+                Patronymic = Model.Patronymic,
+                Age = Model.Age
+            };
+
+            if (Model.Id == 0)
+                _EmployeesData.Add(employee);
+            else
+                _EmployeesData.Edit(employee);
+
+            _EmployeesData.SaveChanges();
+
+            return RedirectToAction(nameof(Index)); // перенаправляет на метод Index, чтобы отобразить всех сотрудников
+        }
+        #endregion
+
+        #region Delete
+        public IActionResult Delete(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var employee = _EmployeesData.GetById(id);// извлекаем сотрудника, которого будем удалять
+
+            if (employee is null)
+                return NotFound();
+
+            return View(   // представление удаления, на которое передадим вьюмодель
+                new EmployeesViewModel // передача вьюмодели на представление
+                {
+                    Id = employee.Id, 
+                    FirstName = employee.Name,
+                    LastName = employee.SurName,
+                    Patronymic = employee.Patronymic,
+                    Age = employee.Age
+                });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id) // подтверждение удаления
+        {
+            _EmployeesData.Delete(id);
+            _EmployeesData.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+    }
 }

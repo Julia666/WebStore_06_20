@@ -14,6 +14,8 @@ namespace WebStore.Controllers
         public IActionResult Index() => View();  // если в () ничего не указано, то ищется представление с именем действия,
                                                  // иначе в () указываем какое конкретно представление хотим отобразить View("Index")
 
+        public IActionResult Throw(string id) => 
+            throw new ApplicationException($"Исключение: {id ?? "<null>"}");
 
         public IActionResult Blogs() => View();
         public IActionResult BlogSingle() => View(); 

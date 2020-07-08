@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.Infrastructure.Interfaces;
+using WebStore.Infrastructure.MiddleWare;
+using WebStore.Infrastructure.Services;
 
 namespace WebStore
 {
@@ -31,7 +34,12 @@ namespace WebStore
         // После того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
+            services.AddControllersWithViews(opt =>
+            {
+                //opt.Filters.Add<Filter>();
+                //opt.Conventions.Add(); // добавление/изменение соглашений MVC-приложения
+            }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
+            services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
         }
 
         // Конфигурирует конкретные сервисы. Формирует конвеер, который будет обрабатывать входящие подключения.
@@ -45,7 +53,7 @@ namespace WebStore
         {
             if (env.IsDevelopment()) // подключаем это промежуточное ПО только на стадии разработки
             {
-                app.UseDeveloperExceptionPage(); // система обработки исключений (если в процессе обработки входящего запроса происходит ошибка,
+               app.UseDeveloperExceptionPage(); // система обработки исключений (если в процессе обработки входящего запроса происходит ошибка,
                                                  // то эта ошибка распространяется вверх по стеку вызова и перехватывается данной системой,
                                                  // в результате мы увидим специальную html страницу с информацией что пошло не так)
             }
@@ -57,6 +65,23 @@ namespace WebStore
             app.UseDefaultFiles();
 
             app.UseRouting(); // подключени системы маршрутизации
+
+            #region
+            
+            /*app.UseWelcomePage("/welcome");
+
+            app.Use(async (context, next) => // Принцип работы промежуточного ПО: 
+            // для каждого входящего запроса получаем объект context (с информацией о входящем соединении и
+            // формируемом результате)
+            {
+                // .... действия над context до следующего элемента в конвеере
+                await next(); // вызов следующего промежуточного ПО в конвеере (через делегат next)
+                // .... действия над context после следующего элемента в конвеере
+            });
+
+            app.UseMiddleware<TestMiddleWare>(); */
+            
+            #endregion
 
             // Добавление специальных обработчиков конечных точек приложения. 
             // Конечная точка - адрес, который мы можем вводить после имени хоста (localhost:5000/HelloWorld/123/asd/zxc - всё что идет после 5000)
