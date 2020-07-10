@@ -14,14 +14,19 @@ namespace WebStore.Controllers
         private readonly IProductData _IProductData;
         public CatalogController(IProductData ProductData) => _IProductData = ProductData;
 
-        public IActionResult Shop(ProductFilter Filter)
+        public IActionResult Shop(int? BrandId, int? SectionId)
         {
-            var products = _IProductData.GetProducts(Filter);    // выгружаем товары с помощью фильтра
+            var filter = new ProductFilter
+            {
+                BrandId = BrandId,
+                SectionId = SectionId
+            };
+            var products = _IProductData.GetProducts(filter);    // выгружаем товары с помощью фильтра
             return View(new CatalogViewModel
             { 
 
-                SectionId = Filter.SectionId,
-                BrandId = Filter.BrandId,
+                SectionId = SectionId,
+                BrandId = BrandId,
                 Products = products.Select(p => new ProductViewModel
                 {
                     Id = p.Id,

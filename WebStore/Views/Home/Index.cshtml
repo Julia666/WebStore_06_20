@@ -1,4 +1,22 @@
-﻿@*await Html.PartialAsync("Partial/_Slider")*@    <!--html-helper-->
+﻿@using WebStore.Infrastructure.Interfaces
+@inject IProductData ProductData
+@{ 
+    var products = ProductData
+        .GetProducts()
+        .Take(6)
+        .Select(p => new ProductViewModel
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Order = p.Order,
+            Price = p.Price,
+            ImageUrl = p.ImageUrl
+        })
+        .OrderBy(p => p.Order);
+}
+
+
+@*await Html.PartialAsync("Partial/_Slider")*@    <!--html-helper-->
 <partial name="Partial/_Slider"/>    <!--tag-helper/ подключение: в _ViewImports.cshtml добавляем @@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers  и WebStore-->
 
 <section>
@@ -9,7 +27,8 @@
             </div>
 
             <div class="col-sm-9 padding-right">
-                <partial name="Partial/_FeaturesItems"/>
+
+                <partial name="Partial/_FeaturesItems" model="products"/>
 
                 <partial name="Partial/_CategoryTab"/>
 
