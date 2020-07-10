@@ -20,7 +20,15 @@ namespace WebStore.Controllers
         // [Route("All")]
         public IActionResult Index()
         {
-            return View(_EmployeesData.Get()); // получение всех сотрудников
+            return View(_EmployeesData.Get().Select(employee => new EmployeesViewModel
+            {
+                Id = employee.Id, // передача вьюмодели на представление
+                FirstName = employee.Name,
+                LastName = employee.SurName,
+                Patronymic = employee.Patronymic,
+                Age = employee.Age
+
+            })); // получение всех сотрудников
         }
 
         // [Route("User-{id}")]
@@ -30,7 +38,16 @@ namespace WebStore.Controllers
             if (employee == null)
                 return NotFound(); // код ошибки 404
 
-            return View(employee);
+            return View(new EmployeesViewModel
+            {
+                Id = employee.Id, // передача вьюмодели на представление
+                FirstName = employee.Name,
+                LastName = employee.SurName,
+                Patronymic = employee.Patronymic,
+                Age = employee.Age,
+                EmployementDate = employee.EmployementDate
+
+            });
         }
 
         #region Edit
@@ -53,8 +70,8 @@ namespace WebStore.Controllers
                 FirstName = employee.Name,
                 LastName = employee.SurName,
                 Patronymic = employee.Patronymic,
-                Age = employee.Age
-
+                Age = employee.Age,
+                EmployementDate = employee.EmployementDate
             }); 
         }
 
@@ -64,13 +81,25 @@ namespace WebStore.Controllers
             if (Model is null)
                 throw new ArgumentNullException(nameof(Model));
 
+            if (Model.Age < 18 || Model.Age > 75)
+                ModelState.AddModelError(nameof(Employee.Age), "Возраст должен быть от 18 до 75 лет"); // информация об ошибке под полем ввода возраста
+
+            if (Model.FirstName == "123" && Model.LastName == "QWE")
+                ModelState.AddModelError(string.Empty, "Странный выбор для имени и фамилии"); // информация добавляется в область для всей модели в целом
+
+
+
+            if (!ModelState.IsValid) // результаты валидации модели, если в них ошибка, то IsValid-false
+                return View(Model); // и тогда модель отправляем обратно в браузер вместе с результатами валидации (ошибки)
+
             var employee = new Employee //формируем нового сотрудника
             {
                 Id = Model.Id,
                 SurName = Model.LastName,
                 Name = Model.FirstName,
                 Patronymic = Model.Patronymic,
-                Age = Model.Age
+                Age = Model.Age,
+                EmployementDate = Model.EmployementDate
             };
 
             if (Model.Id == 0)
@@ -102,7 +131,8 @@ namespace WebStore.Controllers
                     FirstName = employee.Name,
                     LastName = employee.SurName,
                     Patronymic = employee.Patronymic,
-                    Age = employee.Age
+                    Age = employee.Age,
+                    EmployementDate = employee.EmployementDate
                 });
         }
 

@@ -16,5 +16,6 @@ namespace WebStore.Models
         {
             get { return this.SurName + " " + this.Name + " " + this.Patronymic; }
         }
+        public DateTime EmployementDate { get; set; }
     }
 }

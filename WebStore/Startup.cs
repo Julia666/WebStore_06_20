@@ -40,6 +40,13 @@ namespace WebStore
                 //opt.Conventions.Add(); // добавление/изменение соглашений MVC-приложения
             }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
             services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
+
+
+            // - каждый из методов выполняет регистрацию указанного [сервиса]интерфейса
+            //  с указанной реализацией конкретного класса,который выполняет этот интерфейс
+            // services.AddTransient<TInterface, TService>();  // - генерируются каждый раз уникальные объекты
+            // services.AddScoped<TInterface, TService>();    // - 1 общий объект
+            // services.AddSingleton<TInterface, TService>();  // - единственный объект
         }
 
         // Конфигурирует конкретные сервисы. Формирует конвеер, который будет обрабатывать входящие подключения.
@@ -49,8 +56,10 @@ namespace WebStore
         // затем этот блок передает подключение на следующее звено конвеера, после этого конвеер начинает разворачиваться в обратную сторону
         // и результат,который сформировался на каждом этапе обрастает новыми деталями и в конце уже в виде веб-страницы отправляется пользователю)
         // Таким образом, вызывая методы, обращенные к переменной app  - мы наращиваем структуру этого конвеера.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
+            // var employees = services.GetRequiredService<IEmployeesData>(); // запрашиваем у менеджера сервисов (сервис-провайдер) нужный нам сервис
+
             if (env.IsDevelopment()) // подключаем это промежуточное ПО только на стадии разработки
             {
                app.UseDeveloperExceptionPage(); // система обработки исключений (если в процессе обработки входящего запроса происходит ошибка,

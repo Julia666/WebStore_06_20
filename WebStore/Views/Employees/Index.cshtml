@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebStore.Models.Employee>
+﻿@model IEnumerable<EmployeesViewModel>
 
     <div class="container">
         <h3>Сотрудники</h3>
@@ -9,11 +9,13 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Id</th>
                     <th>Фамилия</th>
                     <th>Имя</th>
                     <th>Отчество</th>
                     <th>Возраст</th>
+                    <th>Начало работы</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,18 +24,18 @@
                 <tr>
                     <td>
                         <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id" class="btn btn-sm btn-default">
-                        <i class="fa fa-info"></i>
+                            <i class="fa fa-info"></i>
                         </a>
                     </td>
                     <td>@employee.Id</td>
-                    <td>@employee.SurName</td>
-                    <td>@employee.Name</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.FirstName</td>
                     <td>@employee.Patronymic</td>
                     <td>@employee.Age</td>
-
+                    <td>@employee.EmployementDate</td>
                     <td>
                         <a asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-sm btn-default">
-                        <i class="fa fa-edit"></i>
+                            <i class="fa fa-edit"></i>
                         </a>
                     </td>
                     <td>
@@ -48,7 +50,4 @@
 
         <hr />
         <a href="~/">На главную</a>
-        <hr />
-        <p>Тестовое значение: @ViewData["TestValue"]</p>
-
     </div>
