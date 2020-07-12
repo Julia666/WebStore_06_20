@@ -1,35 +1,39 @@
-﻿@model WebStore.Models.Employee
+﻿@model EmployeesViewModel
 
-    <div class="container">
-        <h3>Сотрудник</h3>
-        <table>
-            <tr class="">
-                <th>Id</th>
-                <td>@Model.Id</td>
-            </tr>
-            <tr>
-                <th>Фамилия</th>
-                <td>@Model.SurName</td>
-            </tr>
-            <tr>
-                <th>Имя</th>
-                <td>@Model.Name</td>
-            </tr>
-            <tr>
-                <th>Отчество</th>
-                <td>@Model.Patronymic</td>
-            </tr>
-            <tr>
-                <th>Возраст</th>
-                <td>@Model.Age</td>
-            </tr>
-        </table>
+<div class="container">
+    <h3>Сотрудник</h3>
+    <table>
+        <tr class="">
+            <th>Id</th>
+            <td>@Model.Id</td>
+        </tr>
+        <tr>
+            <th><label asp-for="LastName"></label></th>
+            <td>@Model.LastName</td>
+        </tr>
+        <tr>
+            <th><label asp-for="FirstName"></label></th>
+            <td>@Model.FirstName</td>
+        </tr>
+        <tr>
+            <th><label asp-for="Patronymic"></label></th>
+            <td>@Model.Patronymic</td>
+        </tr>
+        <tr>
+            <th><label asp-for="Age"></label></th>
+            <td>@Model.Age</td>
+        </tr>
+        <tr>
+            <th>Возраст</th>
+            <td>@Model.EmployementDate</td>
+        </tr>
+    </table>
 
-        <hr />
-        <div>
-            <a asp-controller="Employees" asp-action="Index" class="btn btn-warning">К списку</a>
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Удалить</a>
-        </div>
-        <br/>
+    <hr />
+    <div>
+        <a asp-controller="Employees" asp-action="Index" class="btn btn-warning">К списку</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Удалить</a>
     </div>
+    <br />
+</div>
 
