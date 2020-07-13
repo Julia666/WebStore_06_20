@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.DAL.Context;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.MiddleWare;
 using WebStore.Infrastructure.Services;
@@ -34,6 +36,9 @@ namespace WebStore
         // После того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст БД внутри нашего приложения
+            opt.UseSqlServer(_Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddControllersWithViews(opt =>
             {
                 //opt.Filters.Add<Filter>();
