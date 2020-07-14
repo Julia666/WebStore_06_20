@@ -37,7 +37,7 @@ namespace WebStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст БД внутри нашего приложения
-            opt.UseSqlServer(_Configuration.GetConnectionString("DefaultConnection")));
+            opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
 
             services.AddControllersWithViews(opt =>
             {
