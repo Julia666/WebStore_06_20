@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Infrastructure.Interfaces;
+using WebStore.Infrastructure.Mapping;
 using WebStore.ViewModels;
 using WebStoreDomain;
 
@@ -24,17 +25,9 @@ namespace WebStore.Controllers
             var products = _IProductData.GetProducts(filter);    // выгружаем товары с помощью фильтра
             return View(new CatalogViewModel
             { 
-
                 SectionId = SectionId,
                 BrandId = BrandId,
-                Products = products.Select(p => new ProductViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Order = p.Order,
-                    Price = p.Price,
-                    ImageUrl = p.ImageUrl
-                }).OrderBy(p => p.Order)
+                Products = products.ToView().OrderBy(p => p.Order)
             });
         }
     }

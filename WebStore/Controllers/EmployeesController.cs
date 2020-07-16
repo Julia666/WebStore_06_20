@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Data;
 using WebStore.Infrastructure.Interfaces;
+using WebStore.Infrastructure.Mapping;
 using WebStore.Models;
 using WebStore.ViewModels;
 
@@ -20,15 +21,7 @@ namespace WebStore.Controllers
         // [Route("All")]
         public IActionResult Index()
         {
-            return View(_EmployeesData.Get().Select(employee => new EmployeesViewModel
-            {
-                Id = employee.Id, // передача вьюмодели на представление
-                FirstName = employee.Name,
-                LastName = employee.SurName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age
-
-            })); // получение всех сотрудников
+            return View(_EmployeesData.Get().ToView()); // получение всех сотрудников
         }
 
         // [Route("User-{id}")]
@@ -38,16 +31,7 @@ namespace WebStore.Controllers
             if (employee == null)
                 return NotFound(); // код ошибки 404
 
-            return View(new EmployeesViewModel
-            {
-                Id = employee.Id, // передача вьюмодели на представление
-                FirstName = employee.Name,
-                LastName = employee.SurName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age,
-                EmployementDate = employee.EmployementDate
-
-            });
+            return View(employee.ToView());
         }
 
         #region Edit
@@ -64,15 +48,7 @@ namespace WebStore.Controllers
             if (employee is null) //если сервис не нашел сотрудника
                 return NotFound();
             // если сотрудник найден, создаем вьюмодель и пердаем на нее информацию
-            return View(new EmployeesViewModel
-            {
-                Id = employee.Id, // передача вьюмодели на представление
-                FirstName = employee.Name,
-                LastName = employee.SurName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age,
-                EmployementDate = employee.EmployementDate
-            }); 
+            return View(employee.ToView()); 
         }
 
         [HttpPost] // обрабатывает ответ формы
@@ -88,24 +64,14 @@ namespace WebStore.Controllers
                 ModelState.AddModelError(string.Empty, "Странный выбор для имени и фамилии"); // информация добавляется в область для всей модели в целом
 
 
-
             if (!ModelState.IsValid) // результаты валидации модели, если в них ошибка, то IsValid-false
                 return View(Model); // и тогда модель отправляем обратно в браузер вместе с результатами валидации (ошибки)
-
-            var employee = new Employee //формируем нового сотрудника
-            {
-                Id = Model.Id,
-                SurName = Model.LastName,
-                Name = Model.FirstName,
-                Patronymic = Model.Patronymic,
-                Age = Model.Age,
-                EmployementDate = Model.EmployementDate
-            };
+       
 
             if (Model.Id == 0)
-                _EmployeesData.Add(employee);
+                _EmployeesData.Add(Model.FromView());
             else
-                _EmployeesData.Edit(employee);
+                _EmployeesData.Edit(Model.FromView());
 
             _EmployeesData.SaveChanges();
 
@@ -124,16 +90,8 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            return View(   // представление удаления, на которое передадим вьюмодель
-                new EmployeesViewModel // передача вьюмодели на представление
-                {
-                    Id = employee.Id, 
-                    FirstName = employee.Name,
-                    LastName = employee.SurName,
-                    Patronymic = employee.Patronymic,
-                    Age = employee.Age,
-                    EmployementDate = employee.EmployementDate
-                });
+            return View(employee.ToView());  // представление удаления, на которое передадим вьюмодель
+                                             // передача вьюмодели на представление         
         }
 
         [HttpPost]
