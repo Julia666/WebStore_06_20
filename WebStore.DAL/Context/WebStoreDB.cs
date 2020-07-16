@@ -19,7 +19,6 @@ namespace WebStore.DAL.Context
 
         public DbSet<Brand> Brands { get; set; }
 
-
         public WebStoreDB(DbContextOptions<WebStoreDB> Options) : base (Options) {}
     }
 }

@@ -5,12 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.DAL.Context;
+using WebStore.Data;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.MiddleWare;
 using WebStore.Infrastructure.Services;
+using WebStore.Infrastructure.Services.InMemory;
+using WebStore.Infrastructure.Services.InSQL;
 
 namespace WebStore
 {
@@ -34,6 +39,11 @@ namespace WebStore
         // ѕосле того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст Ѕƒ внутри нашего приложени€
+            opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
+
+            services.AddTransient<WebStoreDBInitializer>();
+
             services.AddControllersWithViews(opt =>
             {
                 //opt.Filters.Add<Filter>();
@@ -41,7 +51,8 @@ namespace WebStore
             }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавл€ем набор сервисов MVC в коллекцию сервисов нашего приложени€
 
             services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавл€ем сервис, регистрируем его
-            services.AddScoped<IProductData, InMemoryProductData>();
+            //services.AddScoped<IProductData, InMemoryProductData>();
+            services.AddScoped<IProductData, SqlProductData>();
 
 
             // - каждый из методов выполн€ет регистрацию указанного [сервиса]интерфейса
@@ -58,8 +69,9 @@ namespace WebStore
         // затем этот блок передает подключение на следующее звено конвеера, после этого конвеер начинает разворачиватьс€ в обратную сторону
         // и результат,который сформировалс€ на каждом этапе обрастает новыми детал€ми и в конце уже в виде веб-страницы отправл€етс€ пользователю)
         // “аким образом, вызыва€ методы, обращенные к переменной app  - мы наращиваем структуру этого конвеера.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db /* IServiceProvider services*/)
         {
+            db.Initialize();
             // var employees = services.GetRequiredService<IEmployeesData>(); // запрашиваем у менеджера сервисов (сервис-провайдер) нужный нам сервис
 
             if (env.IsDevelopment()) // подключаем это промежуточное ѕќ только на стадии разработки
