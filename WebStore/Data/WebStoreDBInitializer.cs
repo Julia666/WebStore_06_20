@@ -69,18 +69,7 @@ namespace WebStore.Data
                 db.CommitTransaction();
             }
 
-            using (db.BeginTransaction())
-            {
-                _db.Employees.AddRange(TestData.Employees);
-
-                db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Products] ON");
-
-                _db.SaveChanges();
-
-                db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Products] OFF");
-
-                db.CommitTransaction();
-            }
+           
 
 
             /*

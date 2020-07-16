@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using WebStoreDomain.Entities;
+using WebStore.Domain.Entities;
 
 namespace WebStore.DAL.Context
 {

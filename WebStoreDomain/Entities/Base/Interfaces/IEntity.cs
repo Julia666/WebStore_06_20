@@ -4,7 +4,7 @@ using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebStoreDomain.Entities.Base.Interfaces
+namespace WebStore.Domain.Entities.Base.Interfaces
 {
     public interface IEntity
     { //  сущность - то, что обладает идентификатором (две сущности равны тогда,когда равны их id и неважно,что у них в других полях/свойствах)
