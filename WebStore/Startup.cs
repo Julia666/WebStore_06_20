@@ -50,7 +50,8 @@ namespace WebStore
                 //opt.Conventions.Add(); // добавление/изменение соглашений MVC-приложения
             }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
 
-            services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
+            //services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
+            services.AddScoped<IEmployeesData, SqlEmployeesData>();
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
 
