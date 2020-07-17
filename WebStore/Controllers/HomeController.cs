@@ -23,5 +23,8 @@ namespace WebStore.Controllers
         public IActionResult ContactUs() => View();
         public IActionResult ProductDetails() => View();
         public IActionResult Error404() => View();
+
+        [ActionName("Content")]
+        public IActionResult GetContent(string Id) => Content($"Content: {Id}"); // будет возвращать тот текст, который мы отправим
     }
 }
