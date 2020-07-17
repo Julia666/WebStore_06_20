@@ -1,7 +1,11 @@
 ﻿
 @{
     ViewData["Title"] = "AccessDenied";
+    Layout = "LayoutSimple";
 }
 
-<h1>AccessDenied</h1>
+    <div class="container">
+        <p class="text-danger">В доступе отказано!</p>
+        <a asp-controller="Home" asp-action="Index">На главную страницу!</a>
+    </div>
 
