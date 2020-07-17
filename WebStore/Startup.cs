@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStore.DAL.Context;
 using WebStore.Data;
+using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.MiddleWare;
 using WebStore.Infrastructure.Services;
@@ -40,11 +42,46 @@ namespace WebStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст БД внутри нашего приложения
-            opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
+                opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
 
             services.AddTransient<WebStoreDBInitializer>();
 
-            services.AddControllersWithViews(opt =>
+            services.AddIdentity<User, Role>() 
+                .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
+                .AddDefaultTokenProviders(); // менеджеры, реализующие основную функциональность системы (смена/подтверждение пароля, email)
+
+            services.Configure<IdentityOptions>(opt =>  // конфигурация системы Identity
+            {
+#if DEBUG     // чтобы выполнялось только в режиме отладки, т.к. пароль теперь небезопасен
+                opt.Password.RequiredLength = 3; // требования к паролю (длина)
+                opt.Password.RequireDigit = false; // убираем требование, чтобы были цифры
+                opt.Password.RequireLowercase = false; // убираем требование, чтобы были буквы нижнего регистра
+                opt.Password.RequireUppercase = false; // убираем требование, чтобы были буквы верхнего регистра
+                opt.Password.RequireNonAlphanumeric = false; // убираем требование, чтобы были неалфавитные символы
+                opt.Password.RequiredUniqueChars = 3;// количество уникальных символов в пароле
+#endif
+                opt.User.RequireUniqueEmail = false;
+                opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+                opt.Lockout.AllowedForNewUsers = true;  // политика блокировки(все вновь создаваемые пользователи д.б. разблокированы)
+                opt.Lockout.MaxFailedAccessAttempts = 10;// количество некорректных входов в систему, после которого он будет заблокирован
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); //насколько именно заблокирован
+            });
+
+            services.ConfigureApplicationCookie(opt => // конфигурация системы cookies
+            {
+                opt.Cookie.Name = "WebStore-GB";
+                opt.Cookie.HttpOnly = true; // передавать только по http-каналу
+                opt.ExpireTimeSpan = TimeSpan.FromDays(10); // время жизни cookies
+
+                opt.LoginPath = "/Account/Login"; // путь, куда должна система посылать пользователей,если он не авторизован, но при этом требуется аворизация
+                opt.LogoutPath = "/Account/Logout"; // путь для выхода из системы
+                opt.AccessDeniedPath = "/Account/AccessDenied"; // когда в доступе отказано, куда отправить пользователя
+
+                opt.SlidingExpiration = true; //чтобы система автоматически меняла id сессии при авторизации 
+            });
+
+           services.AddControllersWithViews(opt =>
             {
                 //opt.Filters.Add<Filter>();
                 //opt.Conventions.Add(); // добавление/изменение соглашений MVC-приложения
@@ -89,6 +126,9 @@ namespace WebStore
             app.UseDefaultFiles();
 
             app.UseRouting(); // подключени системы маршрутизации
+
+            app.UseAuthentication(); // из заголовков cookies будет извлекаться объект пользователя, расшифровываться, десерриализоваться и проверяться кто это такой
+            app.UseAuthorization(); // проверяется имеет ли пользователь право доступа к запрошенным ресурсам или нет
 
             #region
             
