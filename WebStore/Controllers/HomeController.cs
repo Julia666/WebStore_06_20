@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebStore.Models;
 
 namespace WebStore.Controllers
 {
@@ -18,14 +17,14 @@ namespace WebStore.Controllers
             throw new ApplicationException($"Исключение: {id ?? "<null>"}");
 
         public IActionResult Blogs() => View();
-        public IActionResult BlogSingle() => View(); 
-        
+        public IActionResult BlogSingle() => View();   
         public IActionResult Cart() => View();
         public IActionResult Checkout() => View();
         public IActionResult ContactUs() => View();
-        public IActionResult Login() => View();
         public IActionResult ProductDetails() => View();
         public IActionResult Error404() => View();
 
+        [ActionName("Content")]
+        public IActionResult GetContent(string Id) => Content($"Content: {Id}"); // будет возвращать тот текст, который мы отправим
     }
 }

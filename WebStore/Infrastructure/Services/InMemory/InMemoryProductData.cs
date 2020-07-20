@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebStore.Data;
 using WebStore.Infrastructure.Interfaces;
-using WebStoreDomain;
-using WebStoreDomain.Entities;
+using WebStore.Domain;
+using WebStore.Domain.Entities;
 
 namespace WebStore.Infrastructure.Services.InMemory
 {

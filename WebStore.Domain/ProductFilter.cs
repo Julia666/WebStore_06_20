@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebStoreDomain
+namespace WebStore.Domain
 {
     public class ProductFilter // возможность выдачи не всех товаров, а только удовлетворяющих критерию поиска 
     {

@@ -24,12 +24,19 @@ namespace WebStore.Data
             //        throw new InvalidOperationException("Ошибка при создании БД");
 
             db.Migrate(); // создает БД, если её не было
-            
+
+            InitializeProducts();
+            InitializeEmployees();
+        }
+
+        private void InitializeProducts()
+        {
+
             if (_db.Products.Any()) // если в контексте есть хотя бы один товар
                 return; // это значит, что БД уже проинициализирована и дальнейшая работа инициализатора не требуется
-
+            var db = _db.Database;
             // если товаров нет, то заполняем БД сперва секциями, потом брендами, потом товарами
-            
+
             using (db.BeginTransaction())    // с помощью транзакций - можем добавить либо все секции вместе, либо не добавлять ни одной. 
             {                                //Если хотя бы одна секция не сможет быть добавлена, значит вся операция откатится обратно
                 _db.Sections.AddRange(TestData.Sections);     // добавляем все секции
@@ -43,11 +50,11 @@ namespace WebStore.Data
                 db.CommitTransaction();
             }
 
-            using (db.BeginTransaction())     
-            {                         
-                _db.Brands.AddRange(TestData.Brands);     
+            using (db.BeginTransaction())
+            {
+                _db.Brands.AddRange(TestData.Brands);
 
-                db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductBrands] ON"); 
+                db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[ProductBrands] ON");
 
                 _db.SaveChanges();
 
@@ -56,22 +63,9 @@ namespace WebStore.Data
                 db.CommitTransaction();
             }
 
-            using (db.BeginTransaction())    
-            {                               
-                _db.Products.AddRange(TestData.Products);     
-
-                db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Products] ON");
-
-                _db.SaveChanges();
-
-                db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Products] OFF");
-
-                db.CommitTransaction();
-            }
-
             using (db.BeginTransaction())
             {
-                _db.Employees.AddRange(TestData.Employees);
+                _db.Products.AddRange(TestData.Products);
 
                 db.ExecuteSqlRaw("SET IDENTITY_INSERT [dbo].[Products] ON");
 
@@ -81,6 +75,8 @@ namespace WebStore.Data
 
                 db.CommitTransaction();
             }
+
+
 
 
             /*
@@ -139,6 +135,22 @@ namespace WebStore.Data
                 db.CommitTransaction();
             }
             */
+        }
+
+        private void InitializeEmployees()
+        {
+            if (_db.Employees.Any())
+                return;
+            using (_db.Database.BeginTransaction())
+            {
+                TestData.Employees.ForEach(employee => employee.Id = 0);
+
+                _db.Employees.AddRange(TestData.Employees);
+
+                _db.SaveChanges();
+
+                _db.Database.CommitTransaction();
+            }
         }
     }
 }
