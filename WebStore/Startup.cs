@@ -23,7 +23,10 @@ namespace WebStore
 {
     public class Startup
 
-    {   // теперь имея этот объект в приватном поле, мы сможем использовать конфигурацию из файла appsettings.json в двух основных методах ConfigureServices() и Configure()
+    {   // добавляем в БД информацию о ролях
+        
+        
+        // теперь имея этот объект в приватном поле, мы сможем использовать конфигурацию из файла appsettings.json в двух основных методах ConfigureServices() и Configure()
         private readonly IConfiguration _Configuration; 
 
 
