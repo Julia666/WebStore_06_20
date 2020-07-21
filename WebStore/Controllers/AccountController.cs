@@ -38,6 +38,8 @@ namespace WebStore.Controllers
             var registration_result = await _UserManager.CreateAsync(user, Model.Password); // получаем объект с результатами процесса регистрации
             if(registration_result.Succeeded) // если процесс регистрации прошел успешно
             {
+                await _UserManager.AddToRoleAsync(user, Role.User);
+
                 await _SignInManager.SignInAsync(user, false); // просим _SignInManager войти этим пользователем в систему и не запоминать процесс входа(в след.раз вводить пароль заново)
                 return RedirectToAction("Index", "Home");
             }
