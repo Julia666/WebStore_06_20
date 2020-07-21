@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebStore.Domain;
 using WebStore.Domain.Entities;
 using WebStore.Infrastructure.Interfaces;
+using WebStore.Infrastructure.Mapping;
 using WebStore.ViewModels;
 
 namespace WebStore.Infrastructure.Services.InCookies
@@ -95,14 +97,24 @@ namespace WebStore.Infrastructure.Services.InCookies
         public void Clear() 
         {
             var cart = Cart;
-
             cart.Items.Clear();
-
             Cart = cart;
-
         }
 
-        public CartViewModel TransformFromCart() { throw new NotImplementedException(); }
+        public CartViewModel TransformFromCart() 
+        {
+            var products = _ProductData.GetProducts(new ProductFilter // найти все товары, которые были запрошены в корзине, чтобы извлечь их цену
+            {
+                Ids = Cart.Items.Select(item => item.ProductId).ToArray() // получаем товары с заданными идентификаторами
+            });
+
+            var products_view_models = products.ToView().ToDictionary(p => p.Id); // формируем из них словарь вьюмоделей
+
+            return new CartViewModel
+            { 
+                Items = Cart.Items.Select(item => (products_view_models[item.ProductId], item.Quantity))
+            };
+        }
 
     }
 }

@@ -19,9 +19,7 @@ namespace WebStore.Infrastructure.Services.InSQL
             _db = db;
         }
 
-        public IEnumerable<Brand> GetBrands() => _db.Brands;
-
-        
+        public IEnumerable<Brand> GetBrands() => _db.Brands; 
 
         public IEnumerable<Product> GetProducts(ProductFilter Filter = null)
         {
@@ -29,12 +27,16 @@ namespace WebStore.Infrastructure.Services.InSQL
                 .Include(product => product.Brand)    // из БД хотим извлечь не только сами товары, но и для каждого товара включить данные по бренду и секции
                 .Include(product => product.Section);
 
-            if (Filter?.BrandId != null) // накладываем фильтры
-                query = query.Where(product => product.BrandId == Filter.BrandId);
+            if (Filter?.Ids?.Length > 0)
+                query = query.Where(product => Filter.Ids.Contains(product.Id)); // БД выдаст только те товары, которые будут указаны в Ids        
+            else
+            {
+                if (Filter?.BrandId != null) // накладываем фильтры
+                    query = query.Where(product => product.BrandId == Filter.BrandId);
 
-            if (Filter?.SectionId != null) 
-                query = query.Where(product => product.SectionId == Filter.SectionId);
-
+                if (Filter?.SectionId != null)
+                    query = query.Where(product => product.SectionId == Filter.SectionId);
+            }
             return query/*.ToArray*/;  // запрос, который возвращаем как результат
         }
 

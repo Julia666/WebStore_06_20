@@ -16,6 +16,7 @@ using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.MiddleWare;
 using WebStore.Infrastructure.Services;
+using WebStore.Infrastructure.Services.InCookies;
 using WebStore.Infrastructure.Services.InMemory;
 using WebStore.Infrastructure.Services.InSQL;
 
@@ -94,6 +95,7 @@ namespace WebStore
             services.AddScoped<IEmployeesData, SqlEmployeesData>();
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
+            services.AddScoped<ICartService, CookiesCartService>();
 
 
             // - каждый из методов выполняет регистрацию указанного [сервиса]интерфейса
