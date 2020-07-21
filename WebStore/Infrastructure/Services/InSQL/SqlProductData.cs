@@ -21,6 +21,8 @@ namespace WebStore.Infrastructure.Services.InSQL
 
         public IEnumerable<Brand> GetBrands() => _db.Brands;
 
+        
+
         public IEnumerable<Product> GetProducts(ProductFilter Filter = null)
         {
             IQueryable<Product> query = _db.Products      //формируем запрос к товарам
@@ -37,6 +39,12 @@ namespace WebStore.Infrastructure.Services.InSQL
         }
 
         public IEnumerable<Section> GetSections() => _db.Sections;
+
+        public Product GetProductById(int id) => _db.Products
+             .Include(product => product.Brand)    // из БД хотим извлечь не только сами товары, но и для каждого товара включить данные по бренду и секции
+             .Include(product => product.Section)
+             .FirstOrDefault(product => product .Id == id); // ищем такой товар, у которого идентификатор будет равен тому,что был запрошен
+
 
 
     }
