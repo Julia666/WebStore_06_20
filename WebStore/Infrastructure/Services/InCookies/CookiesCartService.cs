@@ -24,7 +24,7 @@ namespace WebStore.Infrastructure.Services.InCookies
             {
                 var context = _HttpContextAccessor.HttpContext;  // берем контекст http-запроса и из него извлекаем cookies
                 var cookies = context.Response.Cookies;
-                var cart_cookies = context.Request.Cookies.[_CartName]; // пытаемся найти саму cookies, которая отвечает за хранение корзины
+                var cart_cookies = context.Request.Cookies[_CartName]; // пытаемся найти саму cookies, которая отвечает за хранение корзины
                 if(cart_cookies is null)  // если cookies вообще нет, то создаем новую корзину и сериализуем её
                 {
                     var cart = new Cart();
