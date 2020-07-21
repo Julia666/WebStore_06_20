@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Data;
 using WebStore.Domain.Entities;
+using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.Mapping;
 using WebStore.ViewModels;
@@ -12,6 +14,7 @@ using WebStore.ViewModels;
 namespace WebStore.Controllers
 {
     // [Route("Users")]
+    [Authorize] // ограничить доступ к этому контроллеру для всех незарегистрированных пользователей
     public class EmployeesController : Controller
     {
         private readonly IEmployeesData _EmployeesData;
@@ -36,6 +39,7 @@ namespace WebStore.Controllers
 
         #region Edit
         [HttpGet]
+        [Authorize(Roles = Role.Administrator)] // редактировать смогут только администраторы
         public IActionResult Edit(int? id)
         {
             if(id is null) // если идентификатор не передан
@@ -80,6 +84,7 @@ namespace WebStore.Controllers
         #endregion
 
         #region Delete
+        [Authorize(Roles = Role.Administrator)] // удалять смогут только администраторы
         public IActionResult Delete(int id)
         {
             if (id <= 0)

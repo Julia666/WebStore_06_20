@@ -16,6 +16,7 @@ using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.MiddleWare;
 using WebStore.Infrastructure.Services;
+using WebStore.Infrastructure.Services.InCookies;
 using WebStore.Infrastructure.Services.InMemory;
 using WebStore.Infrastructure.Services.InSQL;
 
@@ -23,7 +24,10 @@ namespace WebStore
 {
     public class Startup
 
-    {   // теперь имея этот объект в приватном поле, мы сможем использовать конфигурацию из файла appsettings.json в двух основных методах ConfigureServices() и Configure()
+    {   // добавляем в БД информацию о ролях
+        
+        
+        // теперь имея этот объект в приватном поле, мы сможем использовать конфигурацию из файла appsettings.json в двух основных методах ConfigureServices() и Configure()
         private readonly IConfiguration _Configuration; 
 
 
@@ -91,6 +95,7 @@ namespace WebStore
             services.AddScoped<IEmployeesData, SqlEmployeesData>();
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
+            services.AddScoped<ICartService, CookiesCartService>();
 
 
             // - каждый из методов выполняет регистрацию указанного [сервиса]интерфейса
