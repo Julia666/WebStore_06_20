@@ -137,7 +137,7 @@ namespace WebStore
             app.UseAuthorization(); // провер€етс€ имеет ли пользователь право доступа к запрошенным ресурсам или нет
 
             #region
-            
+
             /*app.UseWelcomePage("/welcome");
 
             app.Use(async (context, next) => // ѕринцип работы промежуточного ѕќ: 
@@ -150,28 +150,36 @@ namespace WebStore
             });
 
             app.UseMiddleware<TestMiddleWare>(); */
-            
+
             #endregion
 
             // ƒобавление специальных обработчиков конечных точек приложени€. 
             //  онечна€ точка - адрес, который мы можем вводить после имени хоста (localhost:5000/HelloWorld/123/asd/zxc - всЄ что идет после 5000)
             // и котора€ должна будет выполнить обработку запроса к ней (действи€). ¬ этом месте мы как раз и можем определить,
             // что конкретно по каким адресам должно быть выполнено
-            app.UseEndpoints(endpoints =>  
+            app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/greetings", async context =>
-                {
-                    await context.Response.WriteAsync(_Configuration["CustomGreetings"]); // берем объект _Configuration и извлекаем из него
-                                                                                          // значение с названием CustomGreetings
+            endpoints.MapGet("/greetings", async context =>
+            {
+                await context.Response.WriteAsync(_Configuration["CustomGreetings"]); // берем объект _Configuration и извлекаем из него
+                                                                                      // значение с названием CustomGreetings
                 });
 
-                /*
-                endpoints.MapGet("/", async context =>  // дл€ корневого адреса (т.е. если ничего не вводить) будет выполнено действие,
-                                                        //  которое возвращает Hello World (берет контекст вход€щего запроса, берет ответ который формируетс€ и в него пишет асинхронно)
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-                */
+            /*
+            endpoints.MapGet("/", async context =>  // дл€ корневого адреса (т.е. если ничего не вводить) будет выполнено действие,
+                                                    //  которое возвращает Hello World (берет контекст вход€щего запроса, берет ответ который формируетс€ и в него пишет асинхронно)
+            {
+                await context.Response.WriteAsync("Hello World!");
+            });
+            */
+
+            endpoints.MapControllerRoute( 
+               name: "areas",
+               pattern: "{ area: exists}/{ controller = Home}/{ action = Index}/{ id ?}"
+               ); // http://localhost:5000/admin/home/index 
+
+
+
 
                 // подключаем систему MVC, котора€ будет сопоставл€ть вход€щие запросы с именами контроллеров
                 // (формируем шаблон сопоставлени€ адреса вход€щего запроса с теми параметрами 
