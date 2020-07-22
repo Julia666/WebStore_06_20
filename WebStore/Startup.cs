@@ -159,9 +159,9 @@ namespace WebStore
             // что конкретно по каким адресам должно быть выполнено
             app.UseEndpoints(endpoints =>
             {
-            endpoints.MapGet("/greetings", async context =>
-            {
-                await context.Response.WriteAsync(_Configuration["CustomGreetings"]); // берем объект _Configuration и извлекаем из него
+                endpoints.MapGet("/greetings", async context =>
+                {
+                    await context.Response.WriteAsync(_Configuration["CustomGreetings"]); // берем объект _Configuration и извлекаем из него
                                                                                       // значение с названием CustomGreetings
                 });
 
@@ -173,10 +173,9 @@ namespace WebStore
             });
             */
 
-            endpoints.MapControllerRoute( 
-               name: "areas",
-               pattern: "{ area: exists}/{ controller = Home}/{ action = Index}/{ id ?}"
-               ); // http://localhost:5000/admin/home/index 
+                endpoints.MapControllerRoute( 
+                    name: "Areas",
+                    pattern: "{ area: exists}/{ controller = Home}/{ action = Index}/{ id ?}"); // http://localhost:5000/admin/home/index 
 
 
 

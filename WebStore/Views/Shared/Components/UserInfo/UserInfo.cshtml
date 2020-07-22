@@ -4,7 +4,7 @@
     <ul class="nav navbar-nav">
         @if (User.IsInRole(Role.Administrator))
         {
-            <li><a href="#"><i class="fa fa-key"></i>Админка</a></li>
+            <li><a asp-area="Admin" asp-controller="Home" asp-action="Index"><i class="fa fa-key"></i>Админка</a></li>
         } 
 
         <li><a href="#"><i class="fa fa-user"></i>@User.Identity.Name</a></li>
