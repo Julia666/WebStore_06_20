@@ -174,10 +174,8 @@ namespace WebStore
             */
 
                 endpoints.MapControllerRoute( 
-                    name: "Areas",
-                    pattern: "{ area: exists}/{ controller = Home}/{ action = Index}/{ id ?}"); // http://localhost:5000/admin/home/index 
-
-
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"); // http://localhost:5000/admin/home/index 
 
 
                 // подключаем систему MVC, котора€ будет сопоставл€ть вход€щие запросы с именами контроллеров

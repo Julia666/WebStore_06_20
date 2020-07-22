@@ -1,13 +1,33 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - Admin - WebStore</title>
+
+    <partial name="Partial/_Styles" />
+
+    @await RenderSectionAsync("Styles", false)
+
 </head>
 <body>
-    <div>
+
+    <div id="wrapper">
+
+        <partial name="Partial/_Header" />
+
+        <partial name="Partial/_ASite" />
+
         @RenderBody()
+
     </div>
+
+    <partial name="Partial/_Footer" />
+
+    <partial name="Partial/_Scripts" />
+
+    @await RenderSectionAsync("Scripts", false)     @*секция, чтобы можно было определять скрипты непосредственно на страничке*@
+
 </body>
 </html>
+
