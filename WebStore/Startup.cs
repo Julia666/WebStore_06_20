@@ -96,6 +96,7 @@ namespace WebStore
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, CookiesCartService>();
+            services.AddTransient<IOrderService, SqlOrderService>();
 
 
             // - каждый из методов выполняет регистрацию указанного [сервиса]интерфейса
