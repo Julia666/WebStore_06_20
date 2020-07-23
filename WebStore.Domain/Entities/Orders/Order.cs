@@ -19,7 +19,7 @@ namespace WebStore.Domain.Entities.Orders
 
         public DateTime Date { get; set; }
 
-        public virtual ICollection<OrderItem> Items { get; set; }  // список того, что было заказано
+        public virtual ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();    // список того, что было заказано
 
     }
 
