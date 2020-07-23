@@ -18,15 +18,19 @@
 
         <partial name="Partial/_ASite" />
 
-        @RenderBody()
-
+        <div id="page-wrapper">
+            <div id="page-inner">
+                @RenderBody()
+            </div>
+            <!-- /. PAGE INNER  -->
+        </div>
+        <!-- /. PAGE WRAPPER  -->
     </div>
+        <partial name="Partial/_Footer" />
 
-    <partial name="Partial/_Footer" />
+        <partial name="Partial/_Scripts" />
 
-    <partial name="Partial/_Scripts" />
-
-    @await RenderSectionAsync("Scripts", false)     @*секция, чтобы можно было определять скрипты непосредственно на страничке*@
+        @await RenderSectionAsync("Scripts", false)     @*секция, чтобы можно было определять скрипты непосредственно на страничке*@
 
 </body>
 </html>
