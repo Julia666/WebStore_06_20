@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebStore.Domain.Entities.Identity;
-using WebStore.ViewModels.Identity;
+using WebStore.Domain.ViewModels.Identity;
 
 namespace WebStore.Controllers
 {

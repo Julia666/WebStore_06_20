@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebStore.ViewModels
+namespace WebStore.Domain.ViewModels
 {
     // передача информации в представление или из представления
     // когда нам возвращается из формы. когда мы формируем представление и вызываем его с помощью метода View,

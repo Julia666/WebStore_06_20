@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Infrastructure.Interfaces;
 using WebStore.Infrastructure.Mapping;
-using WebStore.ViewModels;
 using WebStore.Domain;
+using WebStore.Domain.ViewModels;
 
 namespace WebStore.Controllers
 {
