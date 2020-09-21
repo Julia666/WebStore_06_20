@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using WebStore.Domain.Entities;
 
-namespace WebStore.Infrastructure.Interfaces
+namespace WebStore.Interfaces.Services
 {
     // Процесс разработки логики приложения всегда должен начинаться с интерфейса этой самой логики
     public interface IEmployeesData
@@ -26,3 +23,4 @@ namespace WebStore.Infrastructure.Interfaces
     }
     
 }
+ 

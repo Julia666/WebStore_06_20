@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebStore.Data;
-using WebStore.Infrastructure.Interfaces;
 using WebStore.Domain;
 using WebStore.Domain.Entities;
+using WebStore.Interfaces.Services;
 
 namespace WebStore.Infrastructure.Services.InMemory
 {
