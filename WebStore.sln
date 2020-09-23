@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.DAL", "Services\We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore", "UI\WebStore\WebStore.csproj", "{6B8AC524-7A23-404B-98DF-01D2C60C3C7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.Interfaces", "Services\WebStore.Interfaces\WebStore.Interfaces.csproj", "{C9068DFF-C472-4EE5-BEDF-D9579132314E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Interfaces", "Services\WebStore.Interfaces\WebStore.Interfaces.csproj", "{C9068DFF-C472-4EE5-BEDF-D9579132314E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.Services", "Services\WebStore.Services\WebStore.Services.csproj", "{8CE36359-9156-49C1-BE71-6B9B2831590D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebStore.Services", "Services\WebStore.Services\WebStore.Services.csproj", "{8CE36359-9156-49C1-BE71-6B9B2831590D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebStore.ServiceHosting", "Services\WebStore.ServiceHosting\WebStore.ServiceHosting.csproj", "{33B02362-C1F0-453D-9F3B-F9D78A4C8333}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{8CE36359-9156-49C1-BE71-6B9B2831590D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CE36359-9156-49C1-BE71-6B9B2831590D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CE36359-9156-49C1-BE71-6B9B2831590D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33B02362-C1F0-453D-9F3B-F9D78A4C8333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33B02362-C1F0-453D-9F3B-F9D78A4C8333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33B02362-C1F0-453D-9F3B-F9D78A4C8333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33B02362-C1F0-453D-9F3B-F9D78A4C8333}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{6B8AC524-7A23-404B-98DF-01D2C60C3C7E} = {121650BF-4B9E-4EC4-95BA-103BE1454FBB}
 		{C9068DFF-C472-4EE5-BEDF-D9579132314E} = {C064525B-4431-4E60-8234-EA23F5BFBEC8}
 		{8CE36359-9156-49C1-BE71-6B9B2831590D} = {C064525B-4431-4E60-8234-EA23F5BFBEC8}
+		{33B02362-C1F0-453D-9F3B-F9D78A4C8333} = {C064525B-4431-4E60-8234-EA23F5BFBEC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D421A91B-9C4A-4B3E-801F-AE45F9826789}
