@@ -9,8 +9,8 @@ namespace WebStore.ServiceHosting.Controllers
 {
     // Сервисом будет сам контроллер. Но вообще контроллер должен ретранслировать вызовы к себе какому-то другому сервису
 
-
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    [Route("api/values")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace WebStore.ServiceHosting.Controllers
             .Select(i => $"Value-{i}")
             .ToList();
 
-        // Все запросы api/Values  будут переадрессованы этому методу
+        // Все запросы api/values  будут переадрессованы этому методу
         // основные действия, которые сможет вызывать клиентская часть
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get() => _Values;
