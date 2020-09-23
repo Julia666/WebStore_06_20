@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using JetBrains.ReSharper.Psi.JavaScript.Impl.ControlFlow.Inspections.ValueAnalysis.SimpleAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.Clients.Values;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
-using WebStore.Infrastructure.MiddleWare;
-using WebStore.Infrastructure.Services;
 using WebStore.Interfaces.Services;
+using WebStore.Interfaces.TestApi;
 using WebStore.Services.Data;
 using WebStore.Services.Products.InCookies;
 using WebStore.Services.Products.InSQL;
@@ -84,7 +82,7 @@ namespace WebStore
                 opt.SlidingExpiration = true; //чтобы система автоматически меняла id сессии при авторизации 
             });
 
-           services.AddControllersWithViews(opt =>
+            services.AddControllersWithViews(opt =>
             {
                 //opt.Filters.Add<Filter>();
                 //opt.Conventions.Add(); // добавление/изменение соглашений MVC-приложения
@@ -95,7 +93,9 @@ namespace WebStore
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, CookiesCartService>();
-            services.AddTransient<IOrderService, SqlOrderService>();
+            services.AddScoped<IOrderService, SqlOrderService>();
+
+            services.AddScoped<IValueService, ValuesClient>();
 
 
             // - каждый из методов выполняет регистрацию указанного [сервиса]интерфейса
