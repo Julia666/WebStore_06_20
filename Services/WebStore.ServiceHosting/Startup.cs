@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebStore.DAL.Context;
+using WebStore.Domain.Entities.Identity;
 using WebStore.Interfaces.Services;
 using WebStore.Services.Data;
 using WebStore.Services.Products;
@@ -32,11 +34,34 @@ namespace WebStore.ServiceHosting
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreDBInitializer>();
 
-           // services.AddScoped<IEmployeesData, SqlEmployeesData>();
-           // services.AddScoped<IProductData, SqlProductData>();
-           // services.AddScoped<IOrderService, SqlOrderService>();
-           // services.AddScoped<ICartService, CookiesCartService>();
-           services.AddWebStoreServices();
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
+                .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(opt =>  // конфигурация системы Identity
+            {
+#if DEBUG     // чтобы выполнялось только в режиме отладки, т.к. пароль теперь небезопасен
+                opt.Password.RequiredLength = 3; // требования к паролю (длина)
+                opt.Password.RequireDigit = false; // убираем требование, чтобы были цифры
+                opt.Password.RequireLowercase = false; // убираем требование, чтобы были буквы нижнего регистра
+                opt.Password.RequireUppercase = false; // убираем требование, чтобы были буквы верхнего регистра
+                opt.Password.RequireNonAlphanumeric = false; // убираем требование, чтобы были неалфавитные символы
+                opt.Password.RequiredUniqueChars = 3;// количество уникальных символов в пароле
+#endif
+                opt.User.RequireUniqueEmail = false;
+                opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+                opt.Lockout.AllowedForNewUsers = true;  // политика блокировки(все вновь создаваемые пользователи д.б. разблокированы)
+                opt.Lockout.MaxFailedAccessAttempts = 10;// количество некорректных входов в систему, после которого он будет заблокирован
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); //насколько именно заблокирован
+            });
+
+
+            // services.AddScoped<IEmployeesData, SqlEmployeesData>();
+            // services.AddScoped<IProductData, SqlProductData>();
+            // services.AddScoped<IOrderService, SqlOrderService>();
+            // services.AddScoped<ICartService, CookiesCartService>();
+            services.AddWebStoreServices();
 
            // Сервис нужен для работы корзины
            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
