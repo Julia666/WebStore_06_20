@@ -2,7 +2,7 @@
 
 namespace WebStore.Domain.DTO.Products
 {
-    class ProductDTO : INamedEntity, IOrderedEntity
+    public class ProductDTO : INamedEntity, IOrderedEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
