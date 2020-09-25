@@ -3,8 +3,10 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WebStore.DAL.Context;
 using WebStore.Domain;
+using WebStore.Domain.DTO.Products;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
+using WebStore.Services.Mapping;
 
 namespace WebStore.Services.Products.InSQL
 {
@@ -17,9 +19,10 @@ namespace WebStore.Services.Products.InSQL
             _db = db;
         }
 
-        public IEnumerable<Brand> GetBrands() => _db.Brands; 
+        public IEnumerable<SectionDTO> GetSections() => _db.Sections.ToDTO();
+        public IEnumerable<BrandDTO> GetBrands() => _db.Brands.ToDTO(); 
 
-        public IEnumerable<Product> GetProducts(ProductFilter Filter = null)
+        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
         {
             IQueryable<Product> query = _db.Products      //формируем запрос к товарам
                 .Include(product => product.Brand)    // из БД хотим извлечь не только сами товары, но и для каждого товара включить данные по бренду и секции
@@ -35,17 +38,14 @@ namespace WebStore.Services.Products.InSQL
                 if (Filter?.SectionId != null)
                     query = query.Where(product => product.SectionId == Filter.SectionId);
             }
-            return query/*.ToArray*/;  // запрос, который возвращаем как результат
+            return query.AsEnumerable().ToDTO();  // запрос, который возвращаем как результат
         }
 
-        public IEnumerable<Section> GetSections() => _db.Sections;
 
-        public Product GetProductById(int id) => _db.Products
-             .Include(product => product.Brand)    // из БД хотим извлечь не только сами товары, но и для каждого товара включить данные по бренду и секции
-             .Include(product => product.Section)
-             .FirstOrDefault(product => product .Id == id); // ищем такой товар, у которого идентификатор будет равен тому,что был запрошен
-
-
-
+        public ProductDTO GetProductById(int id) => _db.Products
+            .Include(product => product.Brand) // из БД хотим извлечь не только сами товары, но и для каждого товара включить данные по бренду и секции
+            .Include(product => product.Section)
+            .FirstOrDefault(product => product.Id == id) // ищем такой товар, у которого идентификатор будет равен тому,что был запрошен
+            .ToDTO();
     }
 }
