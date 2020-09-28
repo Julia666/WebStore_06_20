@@ -35,25 +35,25 @@ namespace WebStore.ServiceHosting
             services.AddTransient<WebStoreDBInitializer>();
 
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
+                .AddEntityFrameworkStores<WebStoreDB>() // СѓРєР°Р·С‹РІР°РµРј,РіРґРµ СЃРёСЃС‚РµРјР° РґРѕР»Р¶РЅР° С…СЂР°РЅРёС‚СЊ РґР°РЅРЅС‹Рµ (РІРЅС‚СЂРё РїСЂРёР»РѕР¶РµРЅРёВ¤ Рј.Р±. РЅРµСЃРєРѕР»СЊРєРѕ РєРѕРЅС‚РµРєСЃС‚РѕРІ Р…Ж’)
                 .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(opt =>  // конфигурация системы Identity
+            services.Configure<IdentityOptions>(opt =>  // РєРѕРЅС„РёРіСѓСЂР°С†РёВ¤ СЃРёСЃС‚РµРјС‹ Identity
             {
-#if DEBUG     // чтобы выполнялось только в режиме отладки, т.к. пароль теперь небезопасен
-                opt.Password.RequiredLength = 3; // требования к паролю (длина)
-                opt.Password.RequireDigit = false; // убираем требование, чтобы были цифры
-                opt.Password.RequireLowercase = false; // убираем требование, чтобы были буквы нижнего регистра
-                opt.Password.RequireUppercase = false; // убираем требование, чтобы были буквы верхнего регистра
-                opt.Password.RequireNonAlphanumeric = false; // убираем требование, чтобы были неалфавитные символы
-                opt.Password.RequiredUniqueChars = 3;// количество уникальных символов в пароле
+#if DEBUG     // С‡С‚РѕР±С‹ РІС‹РїРѕР»РЅВ¤Р»РѕСЃСЊ С‚РѕР»СЊРєРѕ РІ СЂРµР¶РёРјРµ РѕС‚Р»Р°РґРєРё, С‚.Рє. РїР°СЂРѕР»СЊ С‚РµРїРµСЂСЊ РЅРµР±РµР·РѕРїР°СЃРµРЅ
+                opt.Password.RequiredLength = 3; // С‚СЂРµР±РѕРІР°РЅРёВ¤ Рє РїР°СЂРѕР»СЋ (РґР»РёРЅР°)
+                opt.Password.RequireDigit = false; // СѓР±РёСЂР°РµРј С‚СЂРµР±РѕРІР°РЅРёРµ, С‡С‚РѕР±С‹ Р±С‹Р»Рё С†РёС„СЂС‹
+                opt.Password.RequireLowercase = false; // СѓР±РёСЂР°РµРј С‚СЂРµР±РѕРІР°РЅРёРµ, С‡С‚РѕР±С‹ Р±С‹Р»Рё Р±СѓРєРІС‹ РЅРёР¶РЅРµРіРѕ СЂРµРіРёСЃС‚СЂР°
+                opt.Password.RequireUppercase = false; // СѓР±РёСЂР°РµРј С‚СЂРµР±РѕРІР°РЅРёРµ, С‡С‚РѕР±С‹ Р±С‹Р»Рё Р±СѓРєРІС‹ РІРµСЂС…РЅРµРіРѕ СЂРµРіРёСЃС‚СЂР°
+                opt.Password.RequireNonAlphanumeric = false; // СѓР±РёСЂР°РµРј С‚СЂРµР±РѕРІР°РЅРёРµ, С‡С‚РѕР±С‹ Р±С‹Р»Рё РЅРµР°Р»С„Р°РІРёС‚РЅС‹Рµ СЃРёРјРІРѕР»С‹
+                opt.Password.RequiredUniqueChars = 3;// РєРѕР»РёС‡РµСЃС‚РІРѕ СѓРЅРёРєР°Р»СЊРЅС‹С… СЃРёРјРІРѕР»РѕРІ РІ РїР°СЂРѕР»Рµ
 #endif
                 opt.User.RequireUniqueEmail = false;
                 opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-                opt.Lockout.AllowedForNewUsers = true;  // политика блокировки(все вновь создаваемые пользователи д.б. разблокированы)
-                opt.Lockout.MaxFailedAccessAttempts = 10;// количество некорректных входов в систему, после которого он будет заблокирован
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); //насколько именно заблокирован
+                opt.Lockout.AllowedForNewUsers = true;  // РїРѕР»РёС‚РёРєР° Р±Р»РѕРєРёСЂРѕРІРєРё(РІСЃРµ РІРЅРѕРІСЊ СЃРѕР·РґР°РІР°РµРјС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё Рґ.Р±. СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°РЅС‹)
+                opt.Lockout.MaxFailedAccessAttempts = 10;// РєРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРєРѕСЂСЂРµРєС‚РЅС‹С… РІС…РѕРґРѕРІ РІ СЃРёСЃС‚РµРјСѓ, РїРѕСЃР»Рµ РєРѕС‚РѕСЂРѕРіРѕ РѕРЅ Р±СѓРґРµС‚ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); //РЅР°СЃРєРѕР»СЊРєРѕ РёРјРµРЅРЅРѕ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ
             });
 
 
@@ -63,7 +63,7 @@ namespace WebStore.ServiceHosting
             // services.AddScoped<ICartService, CookiesCartService>();
             services.AddWebStoreServices();
 
-           // Сервис нужен для работы корзины
+           // вЂ”РµСЂРІРёСЃ РЅСѓР¶РµРЅ РґР»В¤ СЂР°Р±РѕС‚С‹ РєРѕСЂР·РёРЅС‹
            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
            services.AddControllers();
