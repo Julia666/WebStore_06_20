@@ -105,7 +105,10 @@ namespace WebStore.Services.Products.InCookies
                 Ids = Cart.Items.Select(item => item.ProductId).ToArray() // получаем товары с заданными идентификаторами
             });
 
-            var products_view_models = products.ToView().ToDictionary(p => p.Id); // формируем из них словарь вьюмоделей
+            var products_view_models = products
+                .FromDTO()
+                .ToView()
+                .ToDictionary(p => p.Id); // формируем из них словарь вьюмоделей
 
             return new CartViewModel
             { 
