@@ -51,7 +51,7 @@ namespace WebStore.ServiceHosting.Controllers
             return result;
         }
 
-        // [NonAction]
+        [NonAction]
         public void SaveChanges() => _EmployeesData.SaveChanges();
     }
 }

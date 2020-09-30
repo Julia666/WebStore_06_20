@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Interfaces.Services;
@@ -63,8 +64,13 @@ namespace WebStore.ServiceHosting
             // services.AddScoped<ICartService, CookiesCartService>();
             services.AddWebStoreServices();
 
-           // —ервис нужен дл¤ работы корзины
+           // Cервис нужен для работы корзины
            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+           services.AddSwaggerGen(opt => // индексирует все контроллеры и сформировывает по ним мета-данные
+           {
+               opt.SwaggerDoc("v1", new OpenApiInfo {Title = "WebStore.API", Version = "v1" });
+           });
 
            services.AddControllers();
         }
@@ -82,6 +88,13 @@ namespace WebStore.ServiceHosting
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();      // промежуточное ПО, которое формирует страницу с инфо по API
+            app.UseSwaggerUI(opt =>
+            {
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "WebStore.API"); // адрес, по которому будет доступен файл json с документацией
+                opt.RoutePrefix = string.Empty; // адрес, по которому будет доступен веб-интерфейс
+            });
 
             app.UseEndpoints(endpoints =>
             {
