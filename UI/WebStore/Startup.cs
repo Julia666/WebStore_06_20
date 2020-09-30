@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStore.Clients.Employees;
+using WebStore.Clients.Identity;
 using WebStore.Clients.Orders;
 using WebStore.Clients.Products;
 using WebStore.Clients.Values;
@@ -49,9 +50,25 @@ namespace WebStore
 
             services.AddTransient<WebStoreDBInitializer>();
 
-            services.AddIdentity<User, Role>() 
-                .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
+            services.AddIdentity<User, Role>(opt => {}) 
+               // .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
                 .AddDefaultTokenProviders(); // менеджеры, реализующие основную функциональность системы (смена/подтверждение пароля, email)
+
+            #region WebAPI Identity clients stores
+
+            services
+                .AddTransient<IUserStore<User>, UsersClient>()
+                .AddTransient<IUserPasswordStore<User>, UsersClient>()
+                .AddTransient<IUserEmailStore<User>, UsersClient>()
+                .AddTransient<IUserPhoneNumberStore<User>, UsersClient>()
+                .AddTransient<IUserTwoFactorStore<User>, UsersClient>()
+                .AddTransient<IUserClaimStore<User>, UsersClient>()
+                .AddTransient<IUserLoginStore<User>, UsersClient>();
+            services
+                .AddTransient<IRoleStore<Role>, RolesClient>();
+
+            #endregion
+
 
             services.Configure<IdentityOptions>(opt =>  // конфигурация системы Identity
             {
@@ -91,8 +108,9 @@ namespace WebStore
             }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
 
             //services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
-            services.AddScoped<IEmployeesData, EmployeesClient>();
             //services.AddScoped<IProductData, InMemoryProductData>();
+
+            services.AddScoped<IEmployeesData, EmployeesClient>();
             services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookiesCartService>();
             services.AddScoped<IOrderService, OrdersClient>();
