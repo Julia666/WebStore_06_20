@@ -45,10 +45,10 @@ namespace WebStore
         // ѕосле того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст Ѕƒ внутри нашего приложени€
-                opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
+            //services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст Ѕƒ внутри нашего приложени€
+                //opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
 
-            services.AddTransient<WebStoreDBInitializer>();
+            //services.AddTransient<WebStoreDBInitializer>();
 
             services.AddIdentity<User, Role>(opt => {}) 
                // .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложени€ м.б. несколько контекстов Ѕƒ)
@@ -132,9 +132,9 @@ namespace WebStore
         // затем этот блок передает подключение на следующее звено конвеера, после этого конвеер начинает разворачиватьс€ в обратную сторону
         // и результат,который сформировалс€ на каждом этапе обрастает новыми детал€ми и в конце уже в виде веб-страницы отправл€етс€ пользователю)
         // “аким образом, вызыва€ методы, обращенные к переменной app  - мы наращиваем структуру этого конвеера.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db /* IServiceProvider services*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, WebStoreDBInitializer db , IServiceProvider services*/)
         {
-            db.Initialize();
+            //db.Initialize();
             // var employees = services.GetRequiredService<IEmployeesData>(); // запрашиваем у менеджера сервисов (сервис-провайдер) нужный нам сервис
 
             if (env.IsDevelopment()) // подключаем это промежуточное ѕќ только на стадии разработки
