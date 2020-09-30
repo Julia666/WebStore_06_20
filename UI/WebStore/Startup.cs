@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStore.Clients.Employees;
+using WebStore.Clients.Identity;
 using WebStore.Clients.Orders;
 using WebStore.Clients.Products;
 using WebStore.Clients.Values;
@@ -44,14 +45,30 @@ namespace WebStore
         // После того,как все сервисы зарегистрированы их надо сконфигурировать (метод ниже Configure())
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст БД внутри нашего приложения
-                opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
+            //services.AddDbContext<WebStoreDB>(opt =>  // регистрируем контекст БД внутри нашего приложения
+                //opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
 
-            services.AddTransient<WebStoreDBInitializer>();
+            //services.AddTransient<WebStoreDBInitializer>();
 
-            services.AddIdentity<User, Role>() 
-                .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
+            services.AddIdentity<User, Role>(opt => {}) 
+               // .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложения м.б. несколько контекстов БД)
                 .AddDefaultTokenProviders(); // менеджеры, реализующие основную функциональность системы (смена/подтверждение пароля, email)
+
+            #region WebAPI Identity clients stores
+
+            services
+                .AddTransient<IUserStore<User>, UsersClient>()
+                .AddTransient<IUserPasswordStore<User>, UsersClient>()
+                .AddTransient<IUserEmailStore<User>, UsersClient>()
+                .AddTransient<IUserPhoneNumberStore<User>, UsersClient>()
+                .AddTransient<IUserTwoFactorStore<User>, UsersClient>()
+                .AddTransient<IUserClaimStore<User>, UsersClient>()
+                .AddTransient<IUserLoginStore<User>, UsersClient>();
+            services
+                .AddTransient<IRoleStore<Role>, RolesClient>();
+
+            #endregion
+
 
             services.Configure<IdentityOptions>(opt =>  // конфигурация системы Identity
             {
@@ -91,8 +108,9 @@ namespace WebStore
             }).AddRazorRuntimeCompilation(); // (ранее AddMvc)добавляем набор сервисов MVC в коллекцию сервисов нашего приложения
 
             //services.AddScoped<IEmployeesData, InMemoryEmployeesData>(); // в коллекцию сервисов добавляем сервис, регистрируем его
-            services.AddScoped<IEmployeesData, EmployeesClient>();
             //services.AddScoped<IProductData, InMemoryProductData>();
+
+            services.AddScoped<IEmployeesData, EmployeesClient>();
             services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookiesCartService>();
             services.AddScoped<IOrderService, OrdersClient>();
@@ -114,9 +132,9 @@ namespace WebStore
         // затем этот блок передает подключение на следующее звено конвеера, после этого конвеер начинает разворачиваться в обратную сторону
         // и результат,который сформировался на каждом этапе обрастает новыми деталями и в конце уже в виде веб-страницы отправляется пользователю)
         // Таким образом, вызывая методы, обращенные к переменной app  - мы наращиваем структуру этого конвеера.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db /* IServiceProvider services*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, WebStoreDBInitializer db , IServiceProvider services*/)
         {
-            db.Initialize();
+            //db.Initialize();
             // var employees = services.GetRequiredService<IEmployeesData>(); // запрашиваем у менеджера сервисов (сервис-провайдер) нужный нам сервис
 
             if (env.IsDevelopment()) // подключаем это промежуточное ПО только на стадии разработки
