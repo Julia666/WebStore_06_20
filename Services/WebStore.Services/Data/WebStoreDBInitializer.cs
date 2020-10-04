@@ -26,6 +26,8 @@ namespace WebStore.Services.Data
         }
         public void Initialize()
         {
+            _Logger.LogInformation("Инициализация БД...");
+
             var db = _db.Database;
 
             // if (db.EnsureDeleted()) //  удаление
@@ -53,6 +55,7 @@ namespace WebStore.Services.Data
                 throw;
             }
 
+            _Logger.LogInformation("Инициализация БД выполнена успешно");
         }
 
         private void InitializeProducts()
