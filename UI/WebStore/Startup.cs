@@ -15,6 +15,7 @@ using WebStore.Clients.Products;
 using WebStore.Clients.Values;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
+using WebStore.Infrastructure.MiddleWare;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestApi;
 using WebStore.Logger;
@@ -148,6 +149,8 @@ namespace WebStore
                                                 // в результате мы увидим специальную html страницу с информацией что пошло не так)
                 app.UseBrowserLink();
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             // добавляем специальные механизмы, которые способны возвращать статическое содержимое 
             // (файлы css, javascript, html которые могут находиться в специальной папке wwwroot)
