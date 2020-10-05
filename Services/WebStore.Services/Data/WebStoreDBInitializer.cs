@@ -52,7 +52,7 @@ namespace WebStore.Services.Data
             {
                 _Logger.LogCritical(new EventId(0), error, "Ошибка процесса инициализации базы данных");
 
-                throw;
+                //throw;
             }
 
             _Logger.LogInformation("Инициализация БД выполнена успешно");
