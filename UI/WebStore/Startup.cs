@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using WebStore.Clients.Employees;
 using WebStore.Clients.Identity;
 using WebStore.Clients.Orders;
@@ -14,8 +15,10 @@ using WebStore.Clients.Products;
 using WebStore.Clients.Values;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
+using WebStore.Infrastructure.MiddleWare;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestApi;
+using WebStore.Logger;
 using WebStore.Services.Data;
 using WebStore.Services.Products.InCookies;
 using WebStore.Services.Products.InSQL;
@@ -132,10 +135,12 @@ namespace WebStore
         // затем этот блок передает подключение на следующее звено конвеера, после этого конвеер начинает разворачиватьс€ в обратную сторону
         // и результат,который сформировалс€ на каждом этапе обрастает новыми детал€ми и в конце уже в виде веб-страницы отправл€етс€ пользователю)
         // “аким образом, вызыва€ методы, обращенные к переменной app  - мы наращиваем структуру этого конвеера.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, WebStoreDBInitializer db , IServiceProvider services*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory log /*, WebStoreDBInitializer db , IServiceProvider services*/)
         {
             //db.Initialize();
             // var employees = services.GetRequiredService<IEmployeesData>(); // запрашиваем у менеджера сервисов (сервис-провайдер) нужный нам сервис
+
+            log.AddLog4Net();
 
             if (env.IsDevelopment()) // подключаем это промежуточное ѕќ только на стадии разработки
             {
@@ -144,6 +149,8 @@ namespace WebStore
                                                 // в результате мы увидим специальную html страницу с информацией что пошло не так)
                 app.UseBrowserLink();
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             // добавл€ем специальные механизмы, которые способны возвращать статическое содержимое 
             // (файлы css, javascript, html которые могут находитьс€ в специальной папке wwwroot)

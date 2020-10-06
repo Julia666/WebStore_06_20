@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
 
@@ -14,35 +15,60 @@ namespace WebStore.Services.Data
         private readonly WebStoreDB _db;
         private readonly UserManager<User> _UserManager;
         private readonly RoleManager<Role> _RoleManager;
+        private readonly ILogger<WebStoreDBInitializer> _Logger;
 
-        public WebStoreDBInitializer(WebStoreDB db, UserManager<User> UserManager, RoleManager<Role> RoleManager)  // в конструкторе просим выдать базу данных WebStoreDB
+        public WebStoreDBInitializer(WebStoreDB db, UserManager<User> UserManager, RoleManager<Role> RoleManager, ILogger<WebStoreDBInitializer> Logger)  // в конструкторе просим выдать базу данных WebStoreDB
         {
             _db = db;
             _UserManager = UserManager;
             _RoleManager = RoleManager;
+            _Logger = Logger;
         }
         public void Initialize()
         {
+            _Logger.LogInformation("Инициализация БД...");
+
             var db = _db.Database;
 
             // if (db.EnsureDeleted()) //  удаление
             //    if (!db.EnsureCreated()) // создание заново
             //        throw new InvalidOperationException("Ошибка при создании БД");
 
-            db.Migrate(); // создает БД, если её не было
+            try
+            {
+                _Logger.LogInformation("Проведение миграций БД");
+                db.Migrate(); // создает БД, если её не было
 
-            InitializeProducts();
-            InitializeEmployees();
-            InitializeIdentityAsync().Wait();
+                _Logger.LogInformation("Инициализация каталога товаров");
+                InitializeProducts();
 
+                _Logger.LogInformation("Инициализация сотрудников");
+                InitializeEmployees();
+
+                _Logger.LogInformation("Инициализация данных системы Identity");
+                InitializeIdentityAsync().Wait();
+            }
+            catch (Exception error)
+            {
+                _Logger.LogCritical(new EventId(0), error, "Ошибка процесса инициализации базы данных");
+
+                //throw;
+            }
+
+            _Logger.LogInformation("Инициализация БД выполнена успешно");
         }
 
         private void InitializeProducts()
         {
 
             if (_db.Products.Any()) // если в контексте есть хотя бы один товар
+            {
+                _Logger.LogInformation("Каталог товаров уже инециализирован");
                 return; // это значит, что БД уже проинициализирована и дальнейшая работа инициализатора не требуется
-            var db = _db.Database;
+            }
+        
+
+        var db = _db.Database;
             // если товаров нет, то заполняем БД сперва секциями, потом брендами, потом товарами
 
             using (db.BeginTransaction())    // с помощью транзакций - можем добавить либо все секции вместе, либо не добавлять ни одной. 
@@ -148,7 +174,10 @@ namespace WebStore.Services.Data
         private void InitializeEmployees()
         {
             if (_db.Employees.Any())
+            {
+                _Logger.LogInformation("Раздел сотрудников уже инициализирован");
                 return;
+            }
             using (_db.Database.BeginTransaction())
             {
                 TestData.Employees.ForEach(employee => employee.Id = 0);
@@ -166,7 +195,10 @@ namespace WebStore.Services.Data
             async Task CheckRoleExist(string RoleName) // контролирует наличие роли с указанным именем
             {
                 if (!await _RoleManager.RoleExistsAsync(RoleName))
+                {
+                    _Logger.LogInformation("Добавление роли пользователя {0}", RoleName);
                     await _RoleManager.CreateAsync(new Role { Name = RoleName });
+                }
             }
 
             await CheckRoleExist(Role.Administrator);
@@ -177,7 +209,11 @@ namespace WebStore.Services.Data
                 var admin = new User { UserName = User.Administrator };
                 var creation_result = await _UserManager.CreateAsync(admin, User.DefaultAdminPassword);
                 if (creation_result.Succeeded)
+                {
+                    _Logger.LogInformation("Пользователь {0} добавлен", User.Administrator);
                     await _UserManager.AddToRoleAsync(admin, Role.Administrator);
+                    _Logger.LogInformation("Пользователю {0} добавлена роль {1}", User.Administrator,Role.Administrator);
+                }
                 else
                 {
                     var errors = creation_result.Errors.Select(e => e.Description);
