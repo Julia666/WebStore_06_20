@@ -9,17 +9,40 @@ using WebStore.Services.Mapping;
 
 namespace WebStore.Services.Products.InCookies
 {
-    public class CookiesCartService : ICartService
+    public class CartService : ICartService
     {
         private readonly IProductData _ProductData;
         private readonly IHttpContextAccessor _HttpContextAccessor;
         private readonly string _CartName;
 
+        private Cart Cart
+        {
+            get
+            {
+                var context = _HttpContextAccessor.HttpContext;
+                var cookies = context.Response.Cookies;
+                var cart_cookies = context.Request.Cookies[_CartName];
+                if (cart_cookies is null)
+                {
+                    var cart = new Cart();
+                    cookies.Append(_CartName, JsonConvert.SerializeObject(cart));
+                    return cart;
+                }
+
+                ReplaceCookies(cookies, cart_cookies);
+                return JsonConvert.DeserializeObject<Cart>(cart_cookies);
+            }
+            set => ReplaceCookies(_HttpContextAccessor.HttpContext.Response.Cookies, JsonConvert.SerializeObject(value));
+        }
+
+        private void ReplaceCookies(IResponseCookies cookies, string cookie)
+        {
+            cookies.Delete(_CartName);
+            cookies.Append(_CartName, cookie);
+        }
 
 
-
-
-        public CookiesCartService(IProductData ProductData, IHttpContextAccessor HttpContextAccessor) // HttpContextAccessor извлекает информацию из контекста http-запроса
+        public CartService(IProductData ProductData, IHttpContextAccessor HttpContextAccessor) // HttpContextAccessor извлекает информацию из контекста http-запроса
         {
             _ProductData = ProductData;
             _HttpContextAccessor = HttpContextAccessor;

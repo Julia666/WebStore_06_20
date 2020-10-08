@@ -15,7 +15,7 @@ namespace WebStore.Services.Products
             services.AddScoped<IEmployeesData, SqlEmployeesData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<IOrderService, SqlOrderService>();
-            services.AddScoped<ICartService, CookiesCartService>();
+            services.AddScoped<ICartService, CartService>();
 
             return services;
         }
