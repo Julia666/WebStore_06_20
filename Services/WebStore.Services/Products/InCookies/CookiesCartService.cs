@@ -15,31 +15,9 @@ namespace WebStore.Services.Products.InCookies
         private readonly IHttpContextAccessor _HttpContextAccessor;
         private readonly string _CartName;
 
-       private Cart Cart 
-        { 
-            get
-            {
-                var context = _HttpContextAccessor.HttpContext;  // берем контекст http-запроса и из него извлекаем cookies
-                var cookies = context.Response.Cookies;
-                var cart_cookies = context.Request.Cookies[_CartName]; // пытаемся найти саму cookies, которая отвечает за хранение корзины
-                if(cart_cookies is null)  // если cookies вообще нет, то создаем новую корзину и сериализуем её
-                {
-                    var cart = new Cart();
-                    cookies.Append(_CartName, JsonConvert.SerializeObject(cart));
-                    return cart;
-                }
 
-                ReplaceCookies(cookies, cart_cookies); // если cookies была, то её необходимо подменить
-                return JsonConvert.DeserializeObject<Cart>(cart_cookies); // десериализуем её
-            }
-            set => ReplaceCookies(_HttpContextAccessor.HttpContext.Response.Cookies, JsonConvert.SerializeObject(value)); 
-        }
 
-        private void ReplaceCookies(IResponseCookies cookies, string cookie)
-        {
-            cookies.Delete(_CartName);
-            cookies.Append(_CartName, cookie);
-        }
+
 
         public CookiesCartService(IProductData ProductData, IHttpContextAccessor HttpContextAccessor) // HttpContextAccessor извлекает информацию из контекста http-запроса
         {
