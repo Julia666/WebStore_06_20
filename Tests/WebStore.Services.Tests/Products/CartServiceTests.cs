@@ -18,7 +18,7 @@ namespace WebStore.Services.Tests.Products
     public class CartServiceTests
     {
 
-
+        
 
         [TestMethod]
         public void Cart_Class_ItemsCount_returns_Correct_Quantity()
