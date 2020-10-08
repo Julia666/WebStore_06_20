@@ -69,5 +69,18 @@ namespace WebStore.Tests.Controllers
             var actual_message = exception.Message;
             Assert.Equal(expected_message,expected_message);
         }
+
+        [TestMethod]
+        public void ErrorStatus_404_RedirectTo_Error404()
+        {
+            var controller = new HomeController();
+            const string status_code_404 = "404";
+            var result = controller.ErrorStatus(status_code_404);
+            // Assert.NotNull(result);
+            var redirect_to_action = Assert.IsType<RedirectToActionResult>(result);
+            const string expected_method_name = nameof(HomeController.Error404);
+            Assert.Equal(expected_method_name, redirect_to_action.ActionName);
+            Assert.Null(redirect_to_action.ControllerName);
+        }
     }
 }

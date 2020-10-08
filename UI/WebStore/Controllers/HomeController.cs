@@ -26,5 +26,17 @@ namespace WebStore.Controllers
 
         [ActionName("Content")]
         public IActionResult GetContent(string Id) => Content($"Content: {Id}"); // будет возвращать тот текст, который мы отправим
+
+        public IActionResult ErrorStatus(string Code) // method to satisfy our module test
+        {
+            switch (Code)
+            {
+                case "404": 
+                    return RedirectToAction(nameof(Error404));
+                default: 
+                    return Content($"Error{Code}");
+            }
+         
+        }
     }
 }
