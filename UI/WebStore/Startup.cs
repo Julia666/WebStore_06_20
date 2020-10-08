@@ -115,7 +115,7 @@ namespace WebStore
 
             services.AddScoped<IEmployeesData, EmployeesClient>();
             services.AddScoped<IProductData, ProductsClient>();
-            services.AddScoped<ICartService, CookiesCartService>();
+            services.AddScoped<ICartService, CartService>();
             services.AddScoped<IOrderService, OrdersClient>();
 
             services.AddScoped<IValueService, ValuesClient>();
