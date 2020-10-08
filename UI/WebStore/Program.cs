@@ -12,9 +12,9 @@ namespace WebStore
     public class Program
     {
         public static void Main(string[] args) =>  CreateHostBuilder(args).Build().Run(); 
-        // Run() - запускает хост на прослушивание (открывается порт в сетевой карте и хост начинает ловить входящие подключения)
+        // Run() - Р·Р°РїСѓСЃРєР°РµС‚ С…РѕСЃС‚ РЅР° РїСЂРѕСЃР»СѓС€РёРІР°РЅРёРµ (РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ РїРѕСЂС‚ РІ СЃРµС‚РµРІРѕР№ РєР°СЂС‚Рµ Рё С…РѕСЃС‚ РЅР°С‡РёРЅР°РµС‚ Р»РѕРІРёС‚СЊ РІС…РѕРґСЏС‰РёРµ РїРѕРґРєР»СЋС‡РµРЅРёСЏ)
 
-        // Создание объекта-построителя хоста
+        // РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р°-РїРѕСЃС‚СЂРѕРёС‚РµР»СЏ С…РѕСЃС‚Р°
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(host =>host
@@ -29,19 +29,19 @@ namespace WebStore
                         }))
         
                 .UseSerilog((host, log) => log.ReadFrom.Configuration(host.Configuration)
-                    .MinimumLevel.Debug() // минимальный уровень ведения журнала - debug
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Error) // переопределение уровня для определенных пространств имен
-                    .Enrich.FromLogContext() // указываем,что в процесс логирования необходимо добавить информацию из контекста
+                    .MinimumLevel.Debug() // РјРёРЅРёРјР°Р»СЊРЅС‹Р№ СѓСЂРѕРІРµРЅСЊ РІРµРґРµРЅРёСЏ Р¶СѓСЂРЅР°Р»Р° - debug
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Error) // РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ СѓСЂРѕРІРЅСЏ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРЅС‹С… РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІ РёРјРµРЅ
+                    .Enrich.FromLogContext() // СѓРєР°Р·С‹РІР°РµРј,С‡С‚Рѕ РІ РїСЂРѕС†РµСЃСЃ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ РЅРµРѕР±С…РѕРґРёРјРѕ РґРѕР±Р°РІРёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ РёР· РєРѕРЅС‚РµРєСЃС‚Р°
                     .WriteTo.Console(
-                        outputTemplate: "[{Timestamp:HH:mm:ss.fff} {Level:u3}]{SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}")  // указываем, куда писать
+                        outputTemplate: "[{Timestamp:HH:mm:ss.fff} {Level:u3}]{SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}")  // СѓРєР°Р·С‹РІР°РµРј, РєСѓРґР° РїРёСЃР°С‚СЊ
                     .WriteTo.RollingFile($@".\Log\WebStore[{DateTime.Now:yyyy-mm-ddTHH-mm-ss}].log")
                     .WriteTo.File(new JsonFormatter(",", true), $@".\Log\WebStore[{DateTime.Now:yyyy-mm-ddTHH-mm-ss}].log.json")
                     .WriteTo.Seq("http://localhost:5341")
                 ) ;
 
-        //.UseUrls("http://localhost:5000") // можно так, через метод расширени
-        // открывает наше приложение миру, какие именно адреса система будет прослушивать
-        // если не подключить - не будет доступа извне к приложению, например, с телефона
+        //.UseUrls("http://localhost:5000") // РјРѕР¶РЅРѕ С‚Р°Рє, С‡РµСЂРµР· РјРµС‚РѕРґ СЂР°СЃС€РёСЂРµРЅРё
+        // РѕС‚РєСЂС‹РІР°РµС‚ РЅР°С€Рµ РїСЂРёР»РѕР¶РµРЅРёРµ РјРёСЂСѓ, РєР°РєРёРµ РёРјРµРЅРЅРѕ Р°РґСЂРµСЃР° СЃРёСЃС‚РµРјР° Р±СѓРґРµС‚ РїСЂРѕСЃР»СѓС€РёРІР°С‚СЊ
+        // РµСЃР»Рё РЅРµ РїРѕРґРєР»СЋС‡РёС‚СЊ - РЅРµ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїР° РёР·РІРЅРµ Рє РїСЂРёР»РѕР¶РµРЅРёСЋ, РЅР°РїСЂРёРјРµСЂ, СЃ С‚РµР»РµС„РѕРЅР°
 
     }
 }
