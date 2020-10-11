@@ -14,13 +14,10 @@ namespace WebStore.Services.Products.InSQL
     {
 
         private readonly WebStoreDB _db;
-        public SqlProductData(WebStoreDB db)
-        {
-            _db = db;
-        }
-
+        public SqlProductData(WebStoreDB db) =>_db = db;
+        
         public IEnumerable<SectionDTO> GetSections() => _db.Sections.ToDTO();
-        public IEnumerable<BrandDTO> GetBrands() => _db.Brands.ToDTO(); 
+        public IEnumerable<BrandDTO> GetBrands() => _db.Brands.Include(b => b.Products).ToDTO(); 
 
         public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
         {
