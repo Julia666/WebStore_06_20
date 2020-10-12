@@ -9,7 +9,7 @@ using WebStore.Services.Mapping;
 
 namespace WebStore.Services.Products.InCookies
 {
-    public class CartService : ICartService
+    public class CookiesCartService : ICartService
     {
         private readonly IProductData _ProductData;
         private readonly IHttpContextAccessor _HttpContextAccessor;
@@ -42,7 +42,7 @@ namespace WebStore.Services.Products.InCookies
         }
 
 
-        public CartService(IProductData ProductData, IHttpContextAccessor HttpContextAccessor) // HttpContextAccessor извлекает информацию из контекста http-запроса
+        public CookiesCartService(IProductData ProductData, IHttpContextAccessor HttpContextAccessor) // HttpContextAccessor извлекает информацию из контекста http-запроса
         {
             _ProductData = ProductData;
             _HttpContextAccessor = HttpContextAccessor;

@@ -20,13 +20,28 @@ namespace WebStore.Components
 
         private readonly IProductData _ProductData;
         public SectionsViewComponent(IProductData productData) => _ProductData = productData;
-        
-        public IViewComponentResult Invoke() => View(GetSections());
+
+        public IViewComponentResult Invoke(string SectionId)
+        {
+            var section_id = int.TryParse(SectionId, out var id) ? id : (int?)null;
+
+            var sections = GetSections(section_id, out var parent_section_id);
+
+            return View(new SelectableSectionsViewModel
+            {
+                Sections = sections,
+                CurrentSectionId = section_id,
+                ParentSectionId = parent_section_id
+            });
+
+        }
+           
 
         // public async Task<IViewComponentResult> Invoke() => View();
 
-        private IEnumerable<SectionViewModel> GetSections() // извлекает секции из сервиса
+        private IEnumerable<SectionViewModel> GetSections(int? SectionId, out int? ParentSectionId) // извлекает секции из сервиса
         {
+            ParentSectionId = null;
             var sections = _ProductData.GetSections().ToArray();
             var parent_sections = sections.Where(s => s.ParentId is null);   // выгружаем все секции из сервиса и извлекаем все родительские секции
             var parent_sections_views = parent_sections // формируем модели представления для родительских секций
@@ -40,15 +55,22 @@ namespace WebStore.Components
 
             foreach (var parent_section in parent_sections_views) // находим все дочерние секции
             {
-                var cuilds = sections.Where(s => s.ParentId == parent_section.Id);
-                foreach(var child_section in cuilds)
-                    parent_section.ChildSections.Add(new SectionViewModel    // добавляем в родительскую секцию в её коллекцию дочерних секций новый вьюмодель
-                    {
-                        Id = child_section.Id,
-                        Name = child_section.Name,
-                        Order = child_section.Order,
-                        ParentSection = parent_section
-                    });
+                var childs = sections.Where(s => s.ParentId == parent_section.Id);
+                foreach (var child_section in childs)
+                {
+                    if (child_section.Id == SectionId)
+                        ParentSectionId = child_section.ParentId;
+
+                    parent_section.ChildSections.Add(
+                        new
+                            SectionViewModel // добавляем в родительскую секцию в её коллекцию дочерних секций новый вьюмодель
+                            {
+                                Id = child_section.Id,
+                                Name = child_section.Name,
+                                Order = child_section.Order,
+                                ParentSection = parent_section
+                            });
+                }
 
                 parent_section.ChildSections.Sort((a, b) => Comparer<double>.Default.Compare(a.Order, b.Order));   // сортировка               
             }

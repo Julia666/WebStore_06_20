@@ -12,6 +12,7 @@ namespace WebStore.Services.Mapping
             Id = brand.Id,
             Name = brand.Name,
             Order = brand.Order,
+            ProductsCount = brand.Products.Count
         };
 
         public static IEnumerable<BrandDTO> ToDTO(this IEnumerable<Brand> brands) => brands.Select(ToDTO);

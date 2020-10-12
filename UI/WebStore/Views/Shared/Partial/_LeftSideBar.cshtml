@@ -2,8 +2,8 @@
     <!-- боковая навигационная панель -->
     @* @await Component.InvokeAsync("Sections")*@ <!-- html-helper -->
 
-    <vc:sections /> <!-- tag-helper -->
-    <vc:brands />
+    <vc:sections section-id="@Context.Request.Query["SectionId"]"/> <!-- tag-helper -->
+    <vc:brands brand-id="@Context.Request.Query["BrandId"]"/>
 
     <div class="price-range">
         <!--price-range-->
