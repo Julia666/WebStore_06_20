@@ -25,7 +25,7 @@ namespace WebStore.Services.Products.InSQL
             .Include(b => b.Products)
             .FirstOrDefault(b => b.Id == id)
             .ToDTO();
-        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
+        public PageProductsDTO GetProducts(ProductFilter Filter = null)
         {
             IQueryable<Product> query = _db.Products      //формируем запрос к товарам
                 .Include(product => product.Brand)    // из БД хотим извлечь не только сами товары, но и для каждого товара включить данные по бренду и секции
@@ -41,7 +41,19 @@ namespace WebStore.Services.Products.InSQL
                 if (Filter?.SectionId != null)
                     query = query.Where(product => product.SectionId == Filter.SectionId);
             }
-            return query.AsEnumerable().ToDTO();  // запрос, который возвращаем как результат
+
+            var total_count = query.Count();
+
+            if (Filter?.PageSize > 0)
+                query = query
+                    .Skip((Filter.Page - 1) * (int) Filter.PageSize)
+                    .Take((int) Filter.PageSize);
+
+            return new PageProductsDTO // запрос, который возвращаем как результат
+            {
+                Products = query.AsEnumerable().ToDTO(),
+                TotalCount = total_count
+            };
         }
 
 
