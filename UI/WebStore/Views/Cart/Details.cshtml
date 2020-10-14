@@ -60,8 +60,10 @@
                                     </a>
                                 </div>
                             </td>
-                            <td class="cart_total" data-price=">@(product.Price * quantity)">
-                                <p class="cart_total_price">@((product.Price * quantity).ToString("C"))</p>
+                            <td class="cart_total" >
+                                <p class="cart_total_price" data-price=">@(product.Price * quantity)">
+                                    @((product.Price * quantity).ToString("C"))
+                                </p>
                             </td>
                             <td class="cart_delete">
                                 <a  asp-controller="Cart"
