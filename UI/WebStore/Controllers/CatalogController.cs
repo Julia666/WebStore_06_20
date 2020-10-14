@@ -37,11 +37,18 @@ namespace WebStore.Controllers
             };
 
             var products = _ProductData.GetProducts(filter);    // выгружаем товары с помощью фильтра
+
             return View(new CatalogViewModel
             { 
                 SectionId = SectionId,
                 BrandId = BrandId,
-                Products = products.Products.FromDTO().ToView().OrderBy(p => p.Order)
+                Products = products.Products.FromDTO().ToView().OrderBy(p => p.Order),
+                PageViewModel = new PageViewModel
+                {
+                    PageSize = page_size ?? 0,
+                    PageNumber = Page,
+                    TotalItems = products.TotalCount
+                }
             });
         }
 
