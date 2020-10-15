@@ -9,6 +9,8 @@
     <title>Home | E-Shopper</title>
 
     <partial name="Partial/_Styles" />
+    
+    @await RenderSectionAsync("Styles", false)
 
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
@@ -22,6 +24,9 @@
 
     @RenderBody() <!--в это место: Включает разметку Index в _Layout-->
 
-    <partial name="Partial/_Scripts" />
+    <partial name="Partial/_Scripts"/>
+    
+    @await RenderSectionAsync("Scripts", false)
+
 </body>
 </html>
