@@ -34,5 +34,6 @@ namespace WebStore.Controllers
         }
 
         public IActionResult SignalRTest() => View();
+
     }
 }
