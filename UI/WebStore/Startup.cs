@@ -15,6 +15,7 @@ using WebStore.Clients.Products;
 using WebStore.Clients.Values;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
+using WebStore.Hubs;
 using WebStore.Infrastructure.MiddleWare;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestApi;
@@ -53,6 +54,8 @@ namespace WebStore
                 //opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=WebStoreFirst.DB;Integrated Security=True"));
 
             //services.AddTransient<WebStoreDBInitializer>();
+
+            services.AddSignalR();
 
             services.AddIdentity<User, Role>(opt => {}) 
                // .AddEntityFrameworkStores<WebStoreDB>() // указываем,где система должна хранить данные (внтри приложени€ м.б. несколько контекстов Ѕƒ)
@@ -187,6 +190,8 @@ namespace WebStore
             // что конкретно по каким адресам должно быть выполнено
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<InformationHub>("/info");
+
                 endpoints.MapGet("/greetings", async context =>
                 {
                     await context.Response.WriteAsync(_Configuration["CustomGreetings"]); // берем объект _Configuration и извлекаем из него
