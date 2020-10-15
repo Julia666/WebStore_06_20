@@ -1,4 +1,5 @@
-﻿@*<script src="~/js/jquery.js"></script>
+﻿@using WebStore.Domain.Entities
+@*<script src="~/js/jquery.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/jquery.scrollUp.min.js"></script>
     <script src="~/js/price-range.js"></script>
@@ -19,5 +20,19 @@
 <environment exclude="Development">
     <script src="~/js/site.min.js" asp-append-version="true"></script>
 </environment>
+
+<script src="~/js/Cart/CartLogik.js" asp-append-version="true"></script>
+
+<script>
+    $(function() {
+        Cart.init({
+            getCartViewLink: "@Url.Action("GetCartView","Cart")",
+            addToCartLink: "@Url.Action("AddToCartAPI","Cart")",
+            decrementLink: "@Url.Action("DecrementFromCartAPI","Cart")",
+            removeFromCart:  "@Url.Action("RemoveFromCartAPI","Cart")"
+        });
+    })
+</script>
+
 
 @*<script src="~/js/site.min.js" asp-append-version="true"></script>*@
